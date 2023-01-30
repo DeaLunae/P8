@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "InputReader", menuName = "Core/Input Reader")]
-public class InputReader : SerializableScriptableObject, GameInput.IGameplayActions, GameInput.IDialoguesActions, GameInput.IMenusActions
+public class InputReader : SerializableScriptableObject, GameInput.IGameplayActions, GameInput.IDialogueActions, GameInput.IMenuActions
 {
 	// Assign delegate{} to events to initialise them with an empty delegate
 	// so we can skip the null check when we use them
@@ -24,13 +24,13 @@ public class InputReader : SerializableScriptableObject, GameInput.IGameplayActi
 	public event Action StartedRunning = delegate { };
 	public event Action StoppedRunning = delegate { };
 
-	// Shared between menus and dialogues
+	// Shared between menu and dialogue
 	public event Action MoveSelectionEvent = delegate { };
 
-	// Dialogues
+	// Dialogue
 	public event Action AdvanceDialogueEvent = delegate { };
 
-	// Menus
+	// Menu
 	public event Action MenuMouseMoveEvent = delegate { };
 	public event Action MenuClickButtonEvent = delegate { };
 	public event Action MenuUnpauseEvent = delegate { };
@@ -49,9 +49,9 @@ public class InputReader : SerializableScriptableObject, GameInput.IGameplayActi
 		{
 			_gameInput = new GameInput();
 
-			_gameInput.Menus.SetCallbacks(this);
+			_gameInput.Menu.SetCallbacks(this);
 			_gameInput.Gameplay.SetCallbacks(this);
-			_gameInput.Dialogues.SetCallbacks(this);
+			_gameInput.Dialogue.SetCallbacks(this);
 		}
 	}
 
@@ -191,31 +191,31 @@ public class InputReader : SerializableScriptableObject, GameInput.IGameplayActi
 
 	public void EnableDialogueInput()
 	{
-		_gameInput.Menus.Enable();
+		_gameInput.Menu.Enable();
 		_gameInput.Gameplay.Disable();
-		_gameInput.Dialogues.Enable();
+		_gameInput.Dialogue.Enable();
 	}
 
 	public void EnableGameplayInput()
 	{
-		_gameInput.Menus.Disable();
-		_gameInput.Dialogues.Disable();
+		_gameInput.Menu.Disable();
+		_gameInput.Dialogue.Disable();
 		_gameInput.Gameplay.Enable();
 	}
 
 	public void EnableMenuInput()
 	{
-		_gameInput.Dialogues.Disable();
+		_gameInput.Dialogue.Disable();
 		_gameInput.Gameplay.Disable();
 
-		_gameInput.Menus.Enable();
+		_gameInput.Menu.Enable();
 	}
 
 	public void DisableAllInput()
 	{
 		_gameInput.Gameplay.Disable();
-		_gameInput.Menus.Disable();
-		_gameInput.Dialogues.Disable();
+		_gameInput.Menu.Disable();
+		_gameInput.Dialogue.Disable();
 	}
 
 	public void OnChangeTab(InputAction.CallbackContext context)
