@@ -25,11 +25,11 @@ public class LogStore
     public LogType LogType;
 
     public int RowCount { get; set; }
-    private bool createStringOverTime;
-    private StringBuilder currentLineLogged;
+    private bool _createStringOverTime;
+    private StringBuilder _currentLineLogged;
     public SortedDictionary<string, string> CurrentLogRow { get; set; }
-    private const string fieldSeparator = ";";
-    private const string lineSeparator = "\n";
+    private const string _fieldSeparator = ";";
+    private const string _lineSeparator = "\n";
 
     public Dictionary<TargetType, bool> TargetsSaved { get; set; }
 
@@ -48,40 +48,27 @@ public class LogStore
         {'_', '-'},
         {'%', ' '},
     };
-
-    private string email;
-    public string SessionId { get; set; }
-
-
-    public LogStore(string label, string email, string sessionID, bool createStringOverTime,
-        LogType logType = LogType.LogEachRow, List<string> headers = null)
+    public LogStore(string label, bool createStringOverTime, LogType logType = LogType.LogEachRow, List<string> headers = null)
     {
-        Init(label, email, sessionID, createStringOverTime, logType, headers);
+        Init(label, createStringOverTime, logType, headers);
     }
 
-    private void Init(string label, string email, string sessionID, bool createStringOverTime,
+    private void Init(string label, bool createStringOverTime,
         LogType logType, List<string> headers = null)
     {
         InitiateTargetsSaved();
         targetsSaving = new List<TargetType>();
-        this.Label = label;
+        Label = label;
         logs = new SortedDictionary<string, List<string>>();
         logString = new StringBuilder();
-        currentLineLogged = new StringBuilder();
+        _currentLineLogged = new StringBuilder();
         CurrentLogRow = new SortedDictionary<string, string>();
-        this.createStringOverTime = createStringOverTime;
-        this.email = email;
-        SessionId = sessionID;
-        this.LogType = logType; ;
-        logs.Add("Timestamp", new List<string>());
-        logs.Add("Framecount", new List<string>());
-        logs.Add("SessionID", new List<string>());
-        logs.Add("Email", new List<string>());
-        if (headers != null) {
-            foreach (string header in headers)
-            {
-                logs.Add(header, new List<string>());
-            }
+        _createStringOverTime = createStringOverTime;
+        LogType = logType;
+        if (headers == null) return;
+        foreach (var header in headers)
+        {
+            logs.Add(header, new List<string>());
         }
     }
 
@@ -119,11 +106,11 @@ public class LogStore
             logs.Add(column, new List<string>(Enumerable.Repeat("NULL", RowCount).ToList()));
             //Currently, if a new header is added durring the logging process, the possibility of logging the datastring
             //on the fly is disabled
-            if (createStringOverTime)
+            if (_createStringOverTime)
             {
                 Debug.LogError("Header " + column + " added durring logging process...\n" +
                                "aborting logging datastring on the fly");
-                createStringOverTime = false;
+                _createStringOverTime = false;
                 logString.Clear();
             }
         }
@@ -167,15 +154,7 @@ public class LogStore
     }
 
     //Adds the commons columns to the current row 
-    private void AddCommonColumns()
-    {
-        string timeStamp = GetTimeStamp();
-        string frameCount = GetFrameCount();
-        AddToDictIfNotExists(CurrentLogRow, "Timestamp", timeStamp);
-        AddToDictIfNotExists(CurrentLogRow, "Framecount", frameCount);
-        AddToDictIfNotExists(CurrentLogRow, "SessionID", SessionId);
-        AddToDictIfNotExists(CurrentLogRow, "Email", email);
-    }
+
 
     //Terminates the current row 
     public void EndRow()
@@ -185,7 +164,6 @@ public class LogStore
             Debug.Log("Unable to log more than one row in OneRowOverwrite mode");
             return;
         }
-        AddCommonColumns();
         foreach (var logsKey in logs.Keys)
         {
             if (!CurrentLogRow.ContainsKey(logsKey))
@@ -196,21 +174,21 @@ public class LogStore
         foreach (var pair in CurrentLogRow)
         {
             CreateOrAddToLogsDict(logs, pair.Key, pair.Value);
-            if (createStringOverTime)
+            if (_createStringOverTime)
             {
-                if (currentLineLogged.Length != 0)
+                if (_currentLineLogged.Length != 0)
                 {
-                    currentLineLogged.Append(fieldSeparator);
+                    _currentLineLogged.Append(_fieldSeparator);
                 }
-                currentLineLogged.Append(pair.Value);
+                _currentLineLogged.Append(pair.Value);
             }
         }
 
-        if (createStringOverTime)
+        if (_createStringOverTime)
         {
-            currentLineLogged.Append(lineSeparator);
-            logString.Append(currentLineLogged);
-            currentLineLogged.Clear();
+            _currentLineLogged.Append(_lineSeparator);
+            logString.Append(_currentLineLogged);
+            _currentLineLogged.Clear();
         }
         CurrentLogRow.Clear();
         RowCount++;
@@ -273,42 +251,39 @@ public class LogStore
     }
 
     //Exports the logs to a string
-    public string ExportToString()
+    private string ExportToString()
     {
         //if createStringOverTime is true, returns directy the dataString
         //else, if isLogStringReady is true, then the datastring is already generated, so returns it
-        if (!createStringOverTime || !isLogStringReady)
+        if (_createStringOverTime && isLogStringReady) return logString.ToString();
+        logString.Clear();
+        for (int i = 0; i < RowCount; i++)
         {
-            logString.Clear();
-            for (int i = 0; i < RowCount; i++)
+            string line = "";
+            foreach (string key in logs.Keys)
             {
-                string line = "";
-                foreach (string key in logs.Keys)
+                if (line != "")
                 {
-                    if (line != "")
-                    {
-                        line += fieldSeparator;
-                    }
-                    line += logs[key][i];
+                    line += _fieldSeparator;
                 }
-
-                logString.Append(line + lineSeparator);
+                line += logs[key][i];
             }
 
-            isLogStringReady = true;
+            logString.Append(line + _lineSeparator);
         }
+        isLogStringReady = true;
         return logString.ToString();
     }
 
     //Returns the headers as a string 
     public string GenerateHeaders()
     {
-        string headers = "";
+        var headers = "";
         foreach (string key in logs.Keys)
         {
             if (headers != "")
             {
-                headers += fieldSeparator;
+                headers += _fieldSeparator;
             }
             headers += key;
         }
@@ -320,25 +295,15 @@ public class LogStore
     // correct format in the process.
     private static string ConvertToString(object arg)
     {
-        if (arg is float)
+        return arg switch
         {
-            return ((float)arg).ToString("0.0000").Replace(",", ".");
-        }
-        if (arg is int)
-        {
-            return arg.ToString();
-        }
-        if (arg is bool)
-        {
-            return ((bool)arg) ? "TRUE" : "FALSE";
-        }
-        if (arg is Vector3)
-        {
-            return ((Vector3)arg).ToString("0.0000").Replace(",", ".");
-        }
-        return arg.ToString();
+            float f => f.ToString("0.0000").Replace(",", "."),
+            int => arg.ToString(),
+            bool b => b ? "TRUE" : "FALSE",
+            Vector3 vector3 => vector3.ToString("0.0000").Replace(",", "."),
+            _ => arg.ToString()
+        };
     }
-
     private string SanitizeString(string str)
     {
         foreach (var pair in charsToRemove)
@@ -347,15 +312,4 @@ public class LogStore
         }
         return str;
     }
-
-    private string GetTimeStamp()
-    {
-        return System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff");
-    }
-
-    private string GetFrameCount()
-    {
-        return Time.frameCount == 0 ? "-1" : Time.frameCount.ToString();
-    }
-
 }
