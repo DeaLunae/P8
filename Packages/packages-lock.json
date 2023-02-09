@@ -12,12 +12,6 @@
       },
       "url": "https://package.openupm.com"
     },
-    "com.devkit.modularis": {
-      "version": "file:Modularis",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.microsoft.mixedreality.input": {
       "version": "file:MixedReality/com.microsoft.mixedreality.input-0.9.2006.tgz",
       "depth": 0,
