@@ -17,21 +17,38 @@ public enum TargetType
 public class LoggingManager : MonoBehaviour
 {
     // sampleLog[COLUMN NAME][COLUMN NO.] = [OBJECT] (fx a float, int, string, bool)
-    private Dictionary<string, LogStore> logsList = new();
+    private Dictionary<string, LogStore> logsList = new Dictionary<string, LogStore>();
+
+    [Header("Logging Settings")]
+    [Tooltip("The Meta Collection will contain a session ID, a device ID and a timestamp.")]
+    [SerializeField]
+    private bool CreateMetaCollection = true;
+
+    [Header("MySQL Save Settings")]
+    [SerializeField]
+    private bool enableMySQLSave = true;
+    [SerializeField]
+    private string email = "anonymous";
+
+    [SerializeField]
+    private ConnectToMySQL connectToMySQL;
+
+
+    [Header("CSV Save Settings")]
+    [SerializeField]
+    private bool enableCSVSave = true;
+
+    [Header("Logging mode")]
     [Tooltip("If set to true, the logging process will be done over time, resulting in faster saving time.\n" +
              "If set to false, the logging process will use less ressources, but the logs will take more time to be saved")]
     [SerializeField]
     private bool logStringOverTime = true;
 
-    [SerializeField] private bool DebugMode;
-    [SerializeField] private string FolderName;
-    
 
     [Tooltip("If save path is empty, it defaults to My Documents.")]
     [SerializeField]
     private string savePath = "";
 
-    
     [SerializeField]
     private string filePrefix = "log";
 
@@ -52,12 +69,43 @@ public class LoggingManager : MonoBehaviour
     {
         targetsEnabled = new List<TargetType>();
         //Initializes the list of activated targets
-        targetsEnabled.Add(TargetType.CSV);
+        if (enableCSVSave)
+        {
+            targetsEnabled.Add(TargetType.CSV);
+        }
+        if (enableMySQLSave)
+        {
+            targetsEnabled.Add(TargetType.MySql);
+        }
+
+        NewFilestamp();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
+        if (CreateMetaCollection)
+        {
+            //if the log added is the Meta one and doesn't exists, we create it
+            //if (AddMetaCollectionToList())
+            AddMetaCollectionToList();
+            //AddToLogstore(logsList["Meta"], logData);
+            //
+            //}
+        }
 
         if (savePath == "")
         {
-            savePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            savePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        }
+        
+    }
+
+
+    public void NewFilestamp()
+    {
+        sessionID = Guid.NewGuid().ToString();
+        deviceID = SystemInfo.deviceUniqueIdentifier;
+        foreach (var pair in logsList)
+        {
+            pair.Value.SessionId = sessionID;
         }
     }
 
@@ -82,7 +130,10 @@ public class LoggingManager : MonoBehaviour
     }
 
 
-
+    public void SetEmail(string newEmail)
+    {
+        email = newEmail;
+    }
 
     public void CreateLog(string collectionLabel, List<string> headers = null)
     {
@@ -91,7 +142,7 @@ public class LoggingManager : MonoBehaviour
             Debug.LogWarning(collectionLabel + " already exists");
             return;
         }
-        LogStore logStore = new LogStore(collectionLabel, logStringOverTime, headers:headers);
+        LogStore logStore = new LogStore(collectionLabel, email, sessionID, logStringOverTime, headers:headers);
         logsList.Add(collectionLabel, logStore);
     }
 
@@ -106,7 +157,7 @@ public class LoggingManager : MonoBehaviour
         //this will be executed only once if the log has not been created.
         else
         {
-            LogStore newLogStore = new LogStore(collectionLabel, logStringOverTime);
+            LogStore newLogStore = new LogStore(collectionLabel, email, sessionID, logStringOverTime);
             AddToLogstore(newLogStore, logData);
             logsList.Add(collectionLabel, newLogStore);
         }
@@ -134,7 +185,7 @@ public class LoggingManager : MonoBehaviour
         //this will be executed only once if the log has not been created.
         else
         {
-            LogStore newLogStore = new LogStore(collectionLabel, logStringOverTime);
+            LogStore newLogStore = new LogStore(collectionLabel, email, sessionID, logStringOverTime);
             logsList.Add(collectionLabel, newLogStore);
             AddToLogstore(newLogStore, columnLabel, value);
         }
@@ -149,7 +200,19 @@ public class LoggingManager : MonoBehaviour
         }
     }
 
-
+    //returns true if the Meta log was created
+    private bool AddMetaCollectionToList()
+    {
+        if (logsList.ContainsKey("Meta"))
+        {
+            return false;
+        }
+        LogStore metaLog = new LogStore("Meta", email, sessionID, logStringOverTime, LogType.OneRowOverwrite);
+        logsList.Add("Meta", metaLog);
+        metaLog.Add("SessionID", sessionID);
+        metaLog.Add("DeviceID", deviceID);
+        return true;
+    }
 
 
 
@@ -208,7 +271,8 @@ public class LoggingManager : MonoBehaviour
             //by doing this, we are sure that the logs will be exported only once
             GenerateLogString(collectionLabel, () =>
             {
-                Save(collectionLabel, clear);
+                Save(collectionLabel, clear, TargetType.CSV);
+                Save(collectionLabel, clear, TargetType.MySql);
             });
         }
         else
@@ -225,7 +289,7 @@ public class LoggingManager : MonoBehaviour
             //by doing this, we are sure that the logs will be exported only once
             GenerateLogString(collectionLabel, () =>
             {
-                Save(collectionLabel, clear);
+                Save(collectionLabel, clear, targetType);
             });
         }
         else
@@ -234,11 +298,19 @@ public class LoggingManager : MonoBehaviour
         }
     }
 
-    private void Save(string collectionLabel, bool clear)
+    private void Save(string collectionLabel, bool clear, TargetType targetType)
     {
-        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        if (targetType == TargetType.CSV)
         {
-            SaveToCSV(collectionLabel, clear);
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                SaveToCSV(collectionLabel, clear);
+            }
+            return;
+        }
+        if (targetType == TargetType.MySql)
+        {
+            SaveToSQL(collectionLabel, clear);
         }
     }
 
@@ -264,9 +336,12 @@ public class LoggingManager : MonoBehaviour
         if (!clear) return;
 
         //checks if all the targets have been saved, if not returns
-        if (targetsEnabled.Any(targetType => !logStore.TargetsSaved[targetType]))
+        foreach (var targetType in targetsEnabled)
         {
-            return;
+            if (!logStore.TargetsSaved[targetType])
+            {
+                return;
+            }
         }
         //All targets have been saved, we can clear the logs
         logStore.Clear();
@@ -278,6 +353,7 @@ public class LoggingManager : MonoBehaviour
     // UpdateHeadersAndDefaults).
     private void SaveToCSV(string label, bool clear)
     {
+        if (!enableCSVSave) return;
         if (logsList.TryGetValue(label, out LogStore logStore))
         {
             WriteToCSV writeToCsv = new WriteToCSV(logStore, savePath, filePrefix, fileExtension);
@@ -292,42 +368,33 @@ public class LoggingManager : MonoBehaviour
             Debug.LogWarning("Trying to save to CSV " + label + " collection but it doesn't exist.");
         }
     }
-    public void SaveCurrentParticipantData()
+
+    private void SaveToSQL(string label, bool clear)
     {
-        FolderName = string.IsNullOrEmpty(FolderName) ? "ProjectData" : FolderName;
-        var internalPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\{FolderName}";
-        var parentDir = new DirectoryInfo($"{internalPath}");
-        if (!parentDir.Exists)
+        if (!enableMySQLSave) { return; }
+
+        if (!logsList.ContainsKey(label))
         {
-            parentDir.Create();
-            var directoryInfo = new DirectoryInfo($"{internalPath}\\_Debug");
-            if (!directoryInfo.Exists)
-            {
-                directoryInfo.Create();
-            }
+            Debug.LogError("Could not find collection " + label + ". Aborting.");
+            logsList[label].RemoveSavingTarget(TargetType.MySql);
+            return;
         }
-        if (DebugMode)
+
+        if (logsList[label].RowCount == 0)
         {
-            var directoryInfo = new DirectoryInfo($"{internalPath}\\_Debug");
-            if (!directoryInfo.Exists)
-            {
-                directoryInfo.Create();
-            }
-            SetSavePath(directoryInfo.FullName);
+            Debug.LogError("Collection " + label + " is empty. Aborting.");
+            logsList[label].RemoveSavingTarget(TargetType.MySql);
+            return;
         }
-        else
+
+        connectToMySQL.AddToUploadQueue(logsList[label], label);
+        connectToMySQL.UploadNow(() =>
         {
-            var currentLargestSubDirectoryNumber = new DirectoryInfo($"{internalPath}").GetDirectories()
-                .Where(e => int.TryParse(e.Name, out _)).OrderByDescending(e => int.Parse(e.Name)).ToArray();
-            var directoryInfo = currentLargestSubDirectoryNumber.Length == 0 ? 
-                new DirectoryInfo($"{internalPath}\\{0}") : 
-                new DirectoryInfo($"{internalPath}\\{int.Parse(currentLargestSubDirectoryNumber[0].Name) + 1}");
-            if (!directoryInfo.Exists)
-            {
-                directoryInfo.Create();
-            }
-            SetSavePath(directoryInfo.FullName);
-        }
-        SaveAllLogs(true);
+            logsList[label].RemoveSavingTarget(TargetType.MySql);
+            logsList[label].TargetsSaved[TargetType.MySql] = true;
+            SaveCallback(logsList[label], clear);
+        });
     }
+
+
 }

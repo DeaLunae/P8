@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(fileName = "InputReader", menuName = "Core/Input Reader")]
+[CreateAssetMenu(fileName = "InputReader", menuName = "Modularis/Input Reader")]
 public class InputReader : SerializableScriptableObject, GameInput.IGameplayActions, GameInput.IDialogueActions, GameInput.IMenuActions
 {
 	// Assign delegate{} to events to initialise them with an empty delegate
