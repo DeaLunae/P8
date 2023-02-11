@@ -9,8 +9,7 @@ class LoggingExampleAdvanced
 {
 
     private LoggingManager loggingManager;
-
-
+    
     private int highscore = 42;
     private string player = "player1";
     private float soundvol = 100f;
@@ -20,7 +19,7 @@ class LoggingExampleAdvanced
     {
         // Find the logging Manager in the scene.
         loggingManager = GameObject.Find("LoggingManager").GetComponent<LoggingManager>();
-
+        
 
         // Tell the logging manager to create the log called MyLabel
         // For SQL connections, make sure that the label matches the label in your JSON file.

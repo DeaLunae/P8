@@ -236,6 +236,11 @@ public class LoggingManager : MonoBehaviour
         }
     }
 
+    public bool HasLog(string collectionLabel)
+    {
+        return logsList.ContainsKey(collectionLabel);
+    }
+    
     public void DeleteLog(string collectionLabel)
     {
         if (logsList.ContainsKey(collectionLabel))

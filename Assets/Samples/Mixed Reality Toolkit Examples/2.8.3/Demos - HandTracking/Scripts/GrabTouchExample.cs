@@ -39,7 +39,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples
         public void OnPositionInputChanged(InputEventData<Vector2> eventData) { }
 
         /// <summary>
-        /// This Handler is called by a HandTrackingInputSource when a Touch action for that hand starts.
+        /// This Handler is called by a HandTrackingInputSource when a Touch action for that leftInteractor starts.
         /// </summary>
         /// <remarks>    
         /// <para>A Touch action requires a target. a Touch action must occur inside the bounds of a gameObject.

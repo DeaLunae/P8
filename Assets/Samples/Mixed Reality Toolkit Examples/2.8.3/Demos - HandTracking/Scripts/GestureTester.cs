@@ -74,7 +74,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples
 
         public void OnGestureStarted(InputEventData eventData)
         {
-            Debug.Log($"OnGestureStarted [{Time.frameCount}]: {eventData.MixedRealityInputAction.Description}");
+            Debug.Log($"OnGestureChanged [{Time.frameCount}]: {eventData.MixedRealityInputAction.Description}");
 
             MixedRealityInputAction action = eventData.MixedRealityInputAction;
             if (action == holdAction)
@@ -91,7 +91,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples
                 ShowRails(Vector3.zero);
             }
 
-            SetIndicator(selectIndicator, "Select:", defaultMaterial);
+            SetIndicator(selectIndicator, "StartSelect:", defaultMaterial);
         }
 
         public void OnGestureUpdated(InputEventData eventData)
@@ -132,7 +132,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples
             }
             else if (action == tapAction)
             {
-                SetIndicator(selectIndicator, "Select: completed", selectMaterial);
+                SetIndicator(selectIndicator, "StartSelect: completed", selectMaterial);
             }
         }
 

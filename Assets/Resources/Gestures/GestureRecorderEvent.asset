@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b1545ddc61d344e8c7dfb8a1370289, type: 3}
+  m_Name: GestureRecorderEvent
+  m_EditorClassIdentifier: 
+  gestures:
+  - {fileID: 11400000, guid: 1c63e5589fd36db4fb911d303ec494f0, type: 2}
+  - {fileID: 11400000, guid: fdcd3c8b07addfe4584d89e12beb5b1c, type: 2}
+  - {fileID: 11400000, guid: 6bd45060ed7554b479e540f83870a81e, type: 2}
+  - {fileID: 11400000, guid: 635549b2fc260ec469622600c8ba2f43, type: 2}
+  - {fileID: 11400000, guid: de4f154ac0e518d4fb9b5a4b65ddd994, type: 2}
+  - {fileID: 11400000, guid: 52b0f6692d5222144afbde253b009fb7, type: 2}
+  - {fileID: 11400000, guid: 136e0aecfc8be0d41952bd87216fc5a9, type: 2}
+  - {fileID: 11400000, guid: 41ccf5c7e316b284a9d1fbe1b90d4167, type: 2}
+  - {fileID: 11400000, guid: 15fea734b1f3a6742a4aa51194dcb80f, type: 2}
+  - {fileID: 11400000, guid: be2d935d64ad0224d965647bbb16ed3d, type: 2}
+  - {fileID: 11400000, guid: 543ae2f2d18a1a448acb29e496df8f80, type: 2}
+  - {fileID: 11400000, guid: e2fbd8e20072e144faef717cc3156946, type: 2}
+  - {fileID: 11400000, guid: 1364078541ac31847a232f6c1815cf26, type: 2}
+  - {fileID: 11400000, guid: 487049ba9a40cb241a84651fb0f88b2f, type: 2}
+  - {fileID: 11400000, guid: 8c5466e6acd69b14ba491275806f6239, type: 2}
+  - {fileID: 11400000, guid: ef1799cf89df07b44b35138211098995, type: 2}
