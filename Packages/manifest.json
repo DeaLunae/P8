@@ -9,7 +9,9 @@
     }
   ],
   "dependencies": {
+    "com.atteneder.draco": "4.0.2",
     "com.atteneder.gltfast": "5.0.0",
+    "com.atteneder.ktx": "2.2.3",
     "com.microsoft.mixedreality.input": "file:MixedReality/com.microsoft.mixedreality.input-0.9.2006.tgz",
     "com.microsoft.mixedreality.openxr": "file:MixedReality/com.microsoft.mixedreality.openxr-1.7.0.tgz",
     "com.microsoft.mixedreality.toolkit.examples": "file:MixedReality/com.microsoft.mixedreality.toolkit.examples-2.8.3.tgz",
@@ -31,7 +33,6 @@
     "com.unity.probuilder": "5.0.6",
     "com.unity.render-pipelines.universal": "14.0.5",
     "com.unity.scriptablebuildpipeline": "1.21.1",
-    "com.unity.sequences": "2.0.1",
     "com.unity.splines": "2.1.0",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.6",

@@ -164,7 +164,7 @@ public class GestureIO : MonoBehaviour
             return;
         }
         validThisFrame = true;
-        if (!GestureRecorder.TryCalculateJointPoses2(_hand, ref jointPoses))
+        if (!GestureRecorder.TryCalculateJointPoses(_hand, ref jointPoses))
         {
             for (var i = 0; i < outputValues.Length; i++)
             {

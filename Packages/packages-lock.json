@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.atteneder.draco": {
+      "version": "4.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.4.11"
+      },
+      "url": "https://package.openupm.com"
+    },
     "com.atteneder.gltfast": {
       "version": "5.0.0",
       "depth": 0,
@@ -9,6 +18,15 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.mathematics": "1.2.6",
         "com.unity.burst": "1.6.6"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.atteneder.ktx": {
+      "version": "2.2.3",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://package.openupm.com"
     },
@@ -218,15 +236,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.recorder": {
-      "version": "4.0.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.timeline": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.render-pipelines.core": {
       "version": "14.0.5",
       "depth": 1,
@@ -261,18 +270,6 @@
       "depth": 2,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.sequences": {
-      "version": "2.0.1",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.timeline": "1.6.3",
-        "com.unity.recorder": "2.5.5",
-        "com.unity.settings-manager": "1.0.3",
-        "com.unity.ugui": "1.0.0"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {

@@ -53,13 +53,15 @@ MonoBehaviour:
     componentName: Input Simulation Service
     priority: 0
     runtimePlatform: 208
-    deviceManagerProfile: {fileID: 11400000, guid: 41478039094d47641bf4e09c20e61a5a, type: 2}
+    deviceManagerProfile: {fileID: 11400000, guid: 41478039094d47641bf4e09c20e61a5a,
+      type: 2}
   - componentType:
       reference: Microsoft.MixedReality.Toolkit.Input.InputRecordingService, Microsoft.MixedReality.Toolkit.Services.InputAnimation
     componentName: Input Recording Service
     priority: 0
     runtimePlatform: -1
-    deviceManagerProfile: {fileID: 11400000, guid: d0f5a7f6d1f9f0b4cb6eb35c797a0f04, type: 2}
+    deviceManagerProfile: {fileID: 11400000, guid: d0f5a7f6d1f9f0b4cb6eb35c797a0f04,
+      type: 2}
   - componentType:
       reference: Microsoft.MixedReality.Toolkit.Input.InputPlaybackService, Microsoft.MixedReality.Toolkit.Services.InputSimulation
     componentName: Input Playback Service
@@ -67,19 +69,13 @@ MonoBehaviour:
     runtimePlatform: -1
     deviceManagerProfile: {fileID: 0}
   - componentType:
-      reference: Microsoft.MixedReality.Toolkit.XRSDK.WindowsMixedReality.WindowsMixedRealityDeviceManager,
-        Microsoft.MixedReality.Toolkit.Providers.XRSDK.WindowsMixedReality
-    componentName: XR SDK Windows Mixed Reality Device Manager
-    priority: 0
-    runtimePlatform: 9
-    deviceManagerProfile: {fileID: 0}
-  - componentType:
       reference: Microsoft.MixedReality.Toolkit.XRSDK.Oculus.Input.OculusXRSDKDeviceManager,
         Microsoft.MixedReality.Toolkit.Providers.XRSDK.Oculus
     componentName: XR SDK Oculus Device Manager
     priority: 0
-    runtimePlatform: 33
-    deviceManagerProfile: {fileID: 11400000, guid: 8f48cb9c26fb518499c65c9f9e8bb4ed, type: 2}
+    runtimePlatform: 57
+    deviceManagerProfile: {fileID: 11400000, guid: 09b5e9e2e5b83044084a2782926e723a,
+      type: 2}
   - componentType:
       reference: Microsoft.MixedReality.Toolkit.XRSDK.OpenXR.OpenXRDeviceManager,
         Microsoft.MixedReality.Toolkit.Providers.OpenXR
@@ -94,12 +90,17 @@ MonoBehaviour:
   focusQueryBufferSize: 128
   shouldUseGraphicsRaycast: 1
   focusIndividualCompoundCollider: 0
-  inputActionsProfile: {fileID: 11400000, guid: 723eb97b02944311b92861f473eee53e, type: 2}
-  inputActionRulesProfile: {fileID: 11400000, guid: 03945385d89102f41855bc8f5116b199, type: 2}
+  inputActionsProfile: {fileID: 11400000, guid: 723eb97b02944311b92861f473eee53e,
+    type: 2}
+  inputActionRulesProfile: {fileID: 11400000, guid: 03945385d89102f41855bc8f5116b199,
+    type: 2}
   pointerProfile: {fileID: 11400000, guid: add1ac75048ada84889f40a0bf85373e, type: 2}
-  gesturesProfile: {fileID: 11400000, guid: bd7829a9b29409045a745b5a18299291, type: 2}
+  gesturesProfile: {fileID: 0}
   speechCommandsProfile: {fileID: 0}
   enableControllerMapping: 1
-  controllerMappingProfile: {fileID: 11400000, guid: 39ded1fd0711a0c448413d0e1ec4f7f3, type: 2}
-  controllerVisualizationProfile: {fileID: 11400000, guid: e5611c8c794bf6243ba5e03c44a60391, type: 2}
-  handTrackingProfile: {fileID: 11400000, guid: c3b32c8a7cfecbc41afcb46b2739c715, type: 2}
+  controllerMappingProfile: {fileID: 11400000, guid: 39ded1fd0711a0c448413d0e1ec4f7f3,
+    type: 2}
+  controllerVisualizationProfile: {fileID: 11400000, guid: e5611c8c794bf6243ba5e03c44a60391,
+    type: 2}
+  handTrackingProfile: {fileID: 11400000, guid: c3b32c8a7cfecbc41afcb46b2739c715,
+    type: 2}

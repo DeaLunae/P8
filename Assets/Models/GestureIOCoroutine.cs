@@ -22,7 +22,7 @@ public class GestureIOCoroutine : MonoBehaviour
     [SerializeField] private DynamicGestureValidator dynamicGestureValidator;
     
     private bool handActive;
-    private bool validThisFrame = false;
+    private bool validThisFrame;
 
     public List<string> inputlabels;
     public List<string> outputlabels;
@@ -111,7 +111,7 @@ public class GestureIOCoroutine : MonoBehaviour
                     dynamicGestureValidator.PushRemoteDetectionToQueue(outputValues);
                     yield return 0;
                 }
-                if (!GestureRecorder.TryCalculateJointPoses2(_hand, ref jointPoses))
+                if (!GestureRecorder.TryCalculateJointPoses(_hand, ref jointPoses))
                 {
                     for (var i = 0; i < outputValues.Length; i++)
                     {

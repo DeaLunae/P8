@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ToggleVisibleOnGestureEvent : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents gestureRecorderEvents;
-    [SerializeField] private Renderer renderer;
+    [SerializeField] private Renderer _render;
     [SerializeField] private Handedness _handedness;
     private void GestureSelected(object obj)
     {
         var gesture = (Gesture)obj;
-        renderer.enabled = _handedness == gesture.handedness;
+        _render.enabled = _handedness == gesture.handedness;
     }
     
     void Start()

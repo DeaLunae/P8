@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.Dwell;
 using Microsoft.MixedReality.Toolkit.UI;
-using OculusSampleFramework;
 using UnityEngine;
 using Interactable = Microsoft.MixedReality.Toolkit.UI.Interactable;
 
@@ -20,9 +19,7 @@ public class DeselectOnGestureEvent : MonoBehaviour
     {
         if (_pressableButton == null || !_onDoneRecording) return;
         GetComponent<Interactable>().CanDeselect = true;
-        
         _pressableButton.ButtonReleased.Invoke();
-        print("aa");
     }
     private void DeselectReplayButton()
     {
