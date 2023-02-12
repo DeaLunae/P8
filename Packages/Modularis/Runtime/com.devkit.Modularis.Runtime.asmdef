@@ -1,0 +1,13 @@
+{
+    "name": "com.devkit.Modularis.Runtime",
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "references":[ "GUID:342c130498616605d8cd38e1e1af60a9" ]
+}

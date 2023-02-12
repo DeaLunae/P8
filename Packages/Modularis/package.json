@@ -1,0 +1,28 @@
+{
+  "name": "com.devkit.modularis",
+  "displayName": "Modularis",
+  "description": "Systems for creating modular behavior using scriptable objects",
+  "version": "0.0.4",
+  "author": {
+    "name": "DevKit"
+  },
+  "keywords": [],
+  "unity": "2019.1",
+  "samples": [
+    {
+      "displayName": "Custom Variable Example",
+      "description": "Contains an example of how custom variables are defined using this system.",
+      "path": "Samples~/CustomVariableExamples"
+    },
+	{
+      "displayName": "Set Examples",
+      "description": "Contains an example of how custom sets are defined using this system.",
+      "path": "Samples~/SetExamples"
+    },
+	{
+      "displayName": "Modular Examples",
+      "description": "Contains an example of how Modular interactions are defined using this system.",
+      "path": "Samples~/ModularExamples"
+    }
+  ]
+}
