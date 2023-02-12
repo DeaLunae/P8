@@ -71,9 +71,9 @@
       }
     },
     "com.microsoft.mixedreality.toolkit.foundation": {
-      "version": "file:MixedReality/com.microsoft.mixedreality.toolkit.foundation-2.8.3.tgz",
+      "version": "file:com.microsoft.mixedreality.toolkit.foundation",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "embedded",
       "dependencies": {
         "com.microsoft.mixedreality.toolkit.standardassets": "2.8.3"
       }
