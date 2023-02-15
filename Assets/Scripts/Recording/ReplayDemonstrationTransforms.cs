@@ -32,7 +32,7 @@ public class ReplayDemonstrationTransforms : MonoBehaviour
             _playing = false;
             return;
         }
-        _currentPoseFrameData = gestureRecorderEvents.CurrentGesture.GetPoseAtTime(_stopwatch.ElapsedMilliseconds);
+        _currentPoseFrameData = gestureRecorderEvents.CurrentGesture.GetPoseAtTime(Gesture.PoseDataType.Demonstration, _stopwatch.ElapsedMilliseconds);
         for (var i = 0; i < _handRootTransforms.Length; i++)
         {
             _handRootTransforms[i].SetPositionAndRotation(
@@ -47,7 +47,7 @@ public class ReplayDemonstrationTransforms : MonoBehaviour
         _playing = true;
         _currentIndex = 0;
         _stopwatch = Stopwatch.StartNew();
-        _stopTime = gestureRecorderEvents.CurrentGesture.DemonstrationFrameCount();
+        _stopTime = gestureRecorderEvents.CurrentGesture.FrameCount(Gesture.PoseDataType.Demonstration);
     }
     private void OnEnable()
     {

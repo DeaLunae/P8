@@ -32,7 +32,7 @@ public class DemonstrationPoseRecorder : MonoBehaviour
             _gestureRecorderEvents.DoneRecordingDemonstrationGesture();
             return;
         }
-        _gestureRecorderEvents.CurrentGesture.ResetPoseData();
+        _gestureRecorderEvents.CurrentGesture.ResetPoseData(Gesture.PoseDataType.Demonstration);
         if (_gestureRecorderEvents.CurrentGesture.Type == Gesture.GestureType.Static)
         {
             _gestureRecorderEvents.CurrentGesture.AddPoseFrame(Gesture.PoseDataType.Demonstration,new Gesture.PoseFrameData

@@ -16,7 +16,7 @@ public class GestureRecorder : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     private Gesture currentGesture;
-    private bool DoneRecording => Time.frameCount - _frameCountOffset == currentGesture.DemonstrationFrameCount() - 1;
+    private bool DoneRecording => true;
     public TrackedHandJoint ReferenceJoint { get; set; } = TrackedHandJoint.Wrist;
     private Handedness recordingHand = Handedness.None;
     private bool isRecording, leftRecording, rightRecording;
