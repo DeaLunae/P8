@@ -5,7 +5,7 @@ using Devkit.Modularis.References;
 using UnityEngine;
 
 [Serializable]
-public class GestureIdReference : BaseReference<GestureIdVariable,Gesture.GestureID>
+public class GestureIdReference : BaseReference<GestureIdVariable,Gesture.GestureName>
 {
     
 }

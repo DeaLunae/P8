@@ -12,7 +12,7 @@ namespace Devkit.Modularis.Channels
     public abstract class ObjectChannelBase<T> : BaseVariable where T : UnityEngine.Object
     {
         [Multiline] public string description = "";
-        private Action<T> _valueChangeCallback = delegate {  };
+        private Action _valueChangeCallback = delegate {  };
         public bool isSet = false; // Any script can check if the Object is null before using it, by just checking this bool
         [SerializeField] protected T value;
 
@@ -24,7 +24,7 @@ namespace Devkit.Modularis.Channels
             {
                 this.value = value;
                 isSet = value != null;
-                _valueChangeCallback?.Invoke(value);
+                _valueChangeCallback?.Invoke();
             }
         }
         
@@ -41,19 +41,18 @@ namespace Devkit.Modularis.Channels
             value = null;
             isSet = false;
         }
-
-
         public override void InvokeCallback()
         {
-            _valueChangeCallback?.Invoke(Value);
+            _valueChangeCallback?.Invoke();
         }
         
-        public void RegisterCallback(Action<T> action)
+
+        public void RegisterCallback(Action action)
         {
             _valueChangeCallback += action;
         }
         
-        public void UnregisterCallback(Action<T> action)
+        public void UnregisterCallback(Action action)
         {
             _valueChangeCallback -= action;
         }

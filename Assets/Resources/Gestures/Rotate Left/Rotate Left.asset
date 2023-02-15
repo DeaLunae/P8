@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7ee64137555bba4e8669071a7d56ec9, type: 3}
   m_Name: Rotate Left
   m_EditorClassIdentifier: 
-  id: 2
-  amountOfSampleFrames: 1000
+  gestureName: 0
+  gestureType: 0
   handedness: 1
-  file: {fileID: 0}
-  handPrefab: {fileID: 8702383580185570312, guid: b6e9d51d7e464894aa891f65b11b356f, type: 3}
+  gestureData: []
