@@ -16,8 +16,9 @@ public class GestureRecorder : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     private Gesture currentGesture;
-    private bool DoneRecording => true;
+    [SerializeField] private int FramesToRecord = 480;
     public TrackedHandJoint ReferenceJoint { get; set; } = TrackedHandJoint.Wrist;
+    private bool DoneRecording => Time.frameCount - _frameCountOffset >= FramesToRecord;
     private Handedness recordingHand = Handedness.None;
     private bool isRecording, leftRecording, rightRecording;
     private LoggingManager _loggingManager;
@@ -26,7 +27,7 @@ public class GestureRecorder : MonoBehaviour
     private MixedRealityPose[] jointPoses;
 
     private string root =
-        $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P7GestureData";
+        $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";
     public static readonly TrackedHandJoint[] _jointIDs =
     {
         TrackedHandJoint.Wrist,
@@ -87,7 +88,7 @@ public class GestureRecorder : MonoBehaviour
         GetOrCreateDirectory($"{root}");
         if (DebugMode)
         {
-            GetOrCreateDirectory("{root}\\Debug");
+            GetOrCreateDirectory($"{root}\\Debug");
             _loggingManager.SetSavePath($"{root}\\Debug");
         }
         else
@@ -121,11 +122,11 @@ public class GestureRecorder : MonoBehaviour
         _frameCountOffset = Time.frameCount;
         _timeOffset = Stopwatch.StartNew();
         
-        if (_loggingManager.HasLog($"gesture-{currentGesture.name.ToString()}-{currentGesture.Handedness.ToString()}"))
+        if (_loggingManager.HasLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}"))
         {
-            _loggingManager.DeleteLog($"gesture-{currentGesture.name.ToString()}-{currentGesture.Handedness.ToString()}");
+            _loggingManager.DeleteLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}");
         }
-        _loggingManager.CreateLog($"gesture-{currentGesture.name.ToString()}-{currentGesture.Handedness.ToString()}");
+        _loggingManager.CreateLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}");
         
         isRecording = true;
     }
@@ -160,7 +161,7 @@ public class GestureRecorder : MonoBehaviour
         {
             return;
         }
-        _loggingManager.Log($"gesture-{currentGesture.name.ToString()}-{currentGesture.Handedness.ToString()}", log);
+        _loggingManager.Log($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}", log);
     }
     private static List<TrackedHandJoint> keys = new List<TrackedHandJoint>();
     public static bool TryCalculateJointPoses(Handedness handedness, ref Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
@@ -204,7 +205,8 @@ public class GestureRecorder : MonoBehaviour
         {Palm_Rot_Y,0},
         {Palm_Rot_Z,0}*/
     };
-    
+
+
     public static void CalculateJointFeatures(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, ref Dictionary<string, float> features)
     {
         //D_Palm_ThumbTip

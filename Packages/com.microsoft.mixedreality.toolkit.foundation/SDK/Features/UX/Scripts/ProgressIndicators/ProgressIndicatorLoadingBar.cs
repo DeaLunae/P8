@@ -70,8 +70,10 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
             smoothProgress = 0;
             lastSmoothProgress = 0;
-            progressText.text = string.Format(progressStringFormat, smoothProgress);
-
+            if (progressText != null)
+            {
+                progressText.text = string.Format(progressStringFormat, smoothProgress);
+            }
             gameObject.SetActive(true);
 
             state = ProgressIndicatorState.Opening;

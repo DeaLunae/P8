@@ -22,7 +22,7 @@ public class ProgressIndicatorEvent : MonoBehaviour
         float progress = 0;
         while (progress < 1)
         {
-            progress = (Time.frameCount - currentStartFrame) / currentGesture.FrameCount(Gesture.PoseDataType.User);
+            progress = (Time.frameCount - currentStartFrame) / (float) _gestureRecorderEvents.GetFramesToRecord();
             indicator.Message = "Recording Pose...";
             indicator.Progress = progress;
             await Task.Yield();
@@ -32,12 +32,12 @@ public class ProgressIndicatorEvent : MonoBehaviour
 
     private async void StartReplayIndicator()
     {
-        var startFrame = Time.frameCount;
+        var startTime = Time.time;
         await indicator.OpenAsync();
         float progress = 0;
         while (progress < 1)
         {
-            progress = (Time.frameCount - startFrame) / (float) currentGesture.FrameCount(Gesture.PoseDataType.User);
+            progress = (Time.time - startTime) / (float) currentGesture.GetTotalTime(Gesture.PoseDataType.User);
             indicator.Message = "Replaying your recording...";
             indicator.Progress = progress;
             await Task.Yield();

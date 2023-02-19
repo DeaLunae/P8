@@ -1,33 +1,23 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
-using Microsoft.MixedReality.OpenXR;
-using Microsoft.MixedReality.Toolkit.Input;
-using Microsoft.MixedReality.Toolkit.Utilities;
+
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
 
-[CreateAssetMenu]
-public class Gesture : ScriptableObject
+[Serializable]
+public class Gesture
 {
     [SerializeField] private GestureName gestureName;
-    
     [SerializeField] private GestureType gestureType;
     [SerializeField] private Handedness handedness;
     [SerializeField] private List<PoseFrameData> demonstrationData = new ();
-    private List<PoseFrameData> userData = new ();
-
+    private List<PoseFrameData> _userData = new ();
     public GestureName Name => gestureName;
     public GestureType Type => gestureType;
     public Handedness Handedness => handedness;
-
-    
-
-
     public int FrameCount(PoseDataType dataType)
     {
         switch (dataType)
@@ -35,7 +25,7 @@ public class Gesture : ScriptableObject
             case PoseDataType.Demonstration:
                 return demonstrationData.Count;
             case PoseDataType.User:
-                return userData.Count;
+                return _userData.Count;
         }
         return -1;
     }
@@ -45,11 +35,19 @@ public class Gesture : ScriptableObject
         switch (dataType)
         {
             case PoseDataType.Demonstration:
-                return demonstrationData.Last().time;
+                if (demonstrationData.Count == 0)
+                {
+                    break;
+                }
+                return demonstrationData.LastOrDefault().time;
             case PoseDataType.User:
-                return userData.Last().time;
+                if (_userData.Count == 0)
+                {
+                    break;
+                }
+                return _userData.LastOrDefault().time;
         }
-        return -1;
+        return 1f;
     }
     public void ResetPoseData(PoseDataType dataType)
     {
@@ -59,7 +57,7 @@ public class Gesture : ScriptableObject
                 demonstrationData.Clear();
                 break;
             case PoseDataType.User:
-                userData.Clear();
+                _userData.Clear();
                 break;
         }
     }
@@ -71,7 +69,7 @@ public class Gesture : ScriptableObject
             case PoseDataType.Demonstration:
                 return demonstrationData[i];
             case PoseDataType.User:
-                return userData[i];
+                return _userData[i];
         }
         return new PoseFrameData();
     }
@@ -85,7 +83,7 @@ public class Gesture : ScriptableObject
                 correctDataset = demonstrationData;
                 break;
             case PoseDataType.User:
-                correctDataset = userData;
+                correctDataset = _userData;
                 break;
         }
         if (time >= GetTotalTime(dataType))
@@ -110,13 +108,14 @@ public class Gesture : ScriptableObject
     
     public void AddPoseFrame(PoseDataType dataType, PoseFrameData poseFrameData)
     {
+        poseFrameData.positions[0] = Vector3.zero;
         switch (dataType)
         {
             case PoseDataType.Demonstration:
-                demonstrationData.Add(poseFrameData);
+                demonstrationData.Insert(0,poseFrameData);
                 break;
             case PoseDataType.User:
-                userData.Add(poseFrameData);
+                _userData.Add(poseFrameData);
                 break;
         }
     }
@@ -130,6 +129,8 @@ public class Gesture : ScriptableObject
         public static PoseFrameData Interpolate(PoseFrameData from, PoseFrameData to, float value)
         {
             var poseFrameData = new PoseFrameData();
+            poseFrameData.positions = new List<Vector3>();
+            poseFrameData.rotations = new List<Quaternion>();
             for (int i = 0; i < from.positions.Count; i++)
             {
                 poseFrameData.positions.Add(Vector3.Lerp(from.positions[i],to.positions[i],value));
@@ -143,7 +144,33 @@ public class Gesture : ScriptableObject
     [Serializable]
     public enum GestureName
     {
-        None
+        None,
+        A, 
+        B, 
+        C, 
+        D, 
+        E, 
+        F, 
+        G, 
+        H, 
+        I, 
+        J, 
+        K, 
+        L, 
+        M, 
+        N, 
+        O, 
+        P, 
+        Q, 
+        R, 
+        S, 
+        T, 
+        U, 
+        V, 
+        W, 
+        X, 
+        Y, 
+        Z
     }
     [Serializable]
     public enum GestureType

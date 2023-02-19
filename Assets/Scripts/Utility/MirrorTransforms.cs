@@ -1,41 +1,92 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class MirrorTransforms : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private ObjectEventReference objectEventReference;
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
+    [SerializeField] private Transform handRoot;
+    [SerializeField] private Handedness hand;
+    
     private Transform _anchorTransform;
     private bool _mirroringActive,_replayingActive;
-
     private Transform[] _originTransforms;
     private Transform[] _targetTransforms;
-
     private bool doesRecordingExist;
     private Vector3[] _currentRecordingPosition;
     private Quaternion[] _currentRecordingRotation;
+    private Stopwatch _stopwatch;
+    private float _stopTime;
+    private Gesture.PoseFrameData _currentPoseFrameData;
+    private int _currentIndex;
     void Start()
     {
         _anchorTransform = transform.parent;
-        if (objectEventReference == null) return;
-        objectEventReference.RegisterListener(onCreateMethod: OnHandSpawned, onDestroyedMethod: OnHandDestroyed);
-        _gestureRecorderEvents.OnStartReplayRecordedUserGesture += OnReplayStarted;
         _targetTransforms = transform.GetComponentsInChildren<Transform>();
         _targetTransforms[0].rotation = Quaternion.identity;
-
     }
-
-    private void OnReplayStarted()
+    void Update()
     {
-        
+        if (_replayingActive)
+        {
+            PlayNextTransformPose();
+        } else if (_mirroringActive)
+        {
+            MirrorCurrentTransform();
+        }
     }
+
+    private void MirrorCurrentTransform()
+    {
+        _targetTransforms[0].localRotation = _originTransforms[0].localRotation;
+        transform.position = _anchorTransform.position;
+        for (var i = 1; i < _originTransforms.Length; i++)
+        {
+            _targetTransforms[i].localPosition = _originTransforms[i].localPosition;
+            _targetTransforms[i].localRotation = _originTransforms[i].localRotation;
+        }
+
+        transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
+    }
+    
+    private void PlayNextTransformPose()
+    {
+        if (_stopwatch.ElapsedMilliseconds >= _stopTime)
+        {
+            //We're doing replaying, so stop the replay here
+            _gestureRecorderEvents.DoneReplayRecordedUserGesture();
+            _replayingActive = false;
+            return;
+        }
+        _currentPoseFrameData = _gestureRecorderEvents.CurrentGesture.GetPoseAtTime(Gesture.PoseDataType.User, _stopwatch.ElapsedMilliseconds/1000f);
+        for (var i = 0; i < _targetTransforms.Length; i++)
+        {
+            _targetTransforms[i].SetLocalPositionAndRotation(
+                _currentPoseFrameData.positions[i],
+                _currentPoseFrameData.rotations[i]);
+        }
+        transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
+    }
+    
+    private Vector3 GetCenterPosition()
+    {
+        var center = _targetTransforms.Aggregate(Vector3.zero, (current, t) => current + t.position);
+        return center / (_targetTransforms.Length);
+    }
+    
     private void OnEnable()
     {
         CheckIfHandsAlreadySpawned();
+        _gestureRecorderEvents.OnGestureSelected += SubscribeIfCorrectHand;
+
+        if (objectEventReference == null) return;
+        objectEventReference.RegisterListener(onCreateMethod: OnHandSpawned, onDestroyedMethod: OnHandDestroyed);
     }
 
     private void CheckIfHandsAlreadySpawned()
@@ -47,37 +98,38 @@ public class MirrorTransforms : MonoBehaviour
         if (appropriateHand == null) return;
         OnHandSpawned(appropriateHand.gameObject);
     }
-
-    private void OnDestroy()
+    
+    private void StartReplayTransforms()
     {
-        if (objectEventReference == null) return;
-        objectEventReference.UnregisterListener(onCreateMethod: OnHandSpawned, onDestroyedMethod: OnHandDestroyed);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (_mirroringActive)
+        if (_gestureRecorderEvents.CurrentGesture.FrameCount(Gesture.PoseDataType.User) == 0)
         {
-            _targetTransforms[0].localRotation = _originTransforms[0].localRotation;
-            transform.position = _anchorTransform.position;
-            for (var i = 1; i < _originTransforms.Length; i++)
-            {
-                _targetTransforms[i].localPosition = _originTransforms[i].localPosition;
-                _targetTransforms[i].localRotation = _originTransforms[i].localRotation;
-            }
-
-            transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
-        }else if (_replayingActive)
-        {
-            
+            Invoke(nameof(DelayedDone),1f);
+            return;
         }
+        _replayingActive = true;
+        _currentIndex = 0;
+        _stopwatch = Stopwatch.StartNew();
+        _stopTime = _gestureRecorderEvents.CurrentGesture.GetTotalTime(Gesture.PoseDataType.User) * 1000;
     }
 
-    private Vector3 GetCenterPosition()
+    private void DelayedDone()
     {
-        var center = _targetTransforms.Aggregate(Vector3.zero, (current, t) => current + t.position);
-        return center / (_targetTransforms.Length);
+        _gestureRecorderEvents.DoneReplayRecordedUserGesture();
+
+    }
+    private void OnDisable()
+    {
+        _gestureRecorderEvents.OnStartReplayRecordedUserGesture -= StartReplayTransforms;
+        _gestureRecorderEvents.OnGestureSelected -= SubscribeIfCorrectHand;
+        if (objectEventReference == null) return;
+        objectEventReference.UnregisterListener(OnHandSpawned, OnHandDestroyed);
+    }
+    
+    private void SubscribeIfCorrectHand(object obj)
+    {
+        _gestureRecorderEvents.OnStartReplayRecordedUserGesture -= StartReplayTransforms;
+        if (_gestureRecorderEvents.CurrentGesture.Handedness != hand) { return; }
+        _gestureRecorderEvents.OnStartReplayRecordedUserGesture += StartReplayTransforms;
     }
     
     private void OnHandSpawned(object obj)
@@ -86,6 +138,7 @@ public class MirrorTransforms : MonoBehaviour
         _originTransforms = go.transform.GetComponentsInChildren<Transform>();
         _mirroringActive = true;
     }
+    
     private void OnHandDestroyed(object obj)
     {
         if (obj is not GameObject go) return;

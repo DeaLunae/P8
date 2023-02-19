@@ -55,7 +55,14 @@ public class GestureRecorderEventManager : MonoBehaviour
             gestureRecorderEvents.StartReplayRecordedUserGesture();
         }
     }
-
+    
+    public void StartReplayDemonstrationGesture()
+    {
+        if (gestureRecorderEvents != null)
+        {
+            gestureRecorderEvents.StartReplayDemonstrationGesture();
+        }
+    }
     public void DoneReplayRecordedUserGesture()
     {
         if (gestureRecorderEvents != null)

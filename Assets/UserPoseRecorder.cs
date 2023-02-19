@@ -1,11 +1,11 @@
-using System;
-using UnityEngine;
-using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Devkit.Modularis.Channels;
+using UnityEngine;
 using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
 
-public class DemonstrationPoseRecorder : MonoBehaviour
+public class UserPoseRecorder : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     [SerializeField] private TransformChannel leftHandTransform,rightHandTransform;
@@ -28,37 +28,27 @@ public class DemonstrationPoseRecorder : MonoBehaviour
 
     private void BeginRecording()
     {
+        print("Begin Recording");
         if (!_correctTransform.isSet)
         {
-            _gestureRecorderEvents.DoneRecordingDemonstrationGesture();
             return;
         }
-        _gestureRecorderEvents.CurrentGesture.ResetPoseData(Gesture.PoseDataType.Demonstration);
-        if (_gestureRecorderEvents.CurrentGesture.Type == Gesture.GestureType.Static)
-        {
-            _gestureRecorderEvents.CurrentGesture.AddPoseFrame(Gesture.PoseDataType.Demonstration,new Gesture.PoseFrameData
-            {
-                positions = _transforms.Select(e => e.localPosition).ToList(),
-                rotations = _transforms.Select(e => e.localRotation).ToList(),
-                time = 0
-            });
-            
-            _gestureRecorderEvents.DoneRecordingDemonstrationGesture();
-            return;
-        }
+        _gestureRecorderEvents.CurrentGesture.ResetPoseData(Gesture.PoseDataType.User);
         _isRecording = true;
         _recordingStartTime = Time.time;
     }
 
     private void StopRecording()
     {
+        print("Stop Recording");
+
         _isRecording = false;
     }
     private void FixedUpdate()
     {
         if (_isRecording && _correctTransform.isSet)
         {
-            _gestureRecorderEvents.CurrentGesture.AddPoseFrame(Gesture.PoseDataType.Demonstration, new Gesture.PoseFrameData
+            _gestureRecorderEvents.CurrentGesture.AddPoseFrame(Gesture.PoseDataType.User, new Gesture.PoseFrameData
             {
                 positions = _transforms.Select(e => e.localPosition).ToList(),
                 rotations = _transforms.Select(e => e.localRotation).ToList(),
@@ -71,8 +61,8 @@ public class DemonstrationPoseRecorder : MonoBehaviour
     {
         if (_gestureRecorderEvents != null)
         {
-            _gestureRecorderEvents.OnStartRecordingDemonstrationGesture += BeginRecording;
-            _gestureRecorderEvents.OnDoneRecordingDemonstrationGesture += StopRecording;
+            _gestureRecorderEvents.OnStartRecordingUserGesture += BeginRecording;
+            _gestureRecorderEvents.OnDoneRecordingUserGesture += StopRecording;
             _gestureRecorderEvents.OnGestureSelected += UpdateTransforms;
             _correctTransform.RegisterCallback(OnHandRootTransformChanged);
         }
@@ -80,6 +70,8 @@ public class DemonstrationPoseRecorder : MonoBehaviour
 
     private void UpdateTransforms(object obj)
     {
+        print("Update Transforms requested");
+
         if (_correctTransform != null)
         {
             _correctTransform.UnregisterCallback(OnHandRootTransformChanged);
@@ -101,8 +93,8 @@ public class DemonstrationPoseRecorder : MonoBehaviour
     {
         if (_gestureRecorderEvents != null)
         {
-            _gestureRecorderEvents.OnStartRecordingDemonstrationGesture -= BeginRecording;
-            _gestureRecorderEvents.OnDoneRecordingDemonstrationGesture -= StopRecording;
+            _gestureRecorderEvents.OnStartRecordingUserGesture -= BeginRecording;
+            _gestureRecorderEvents.OnDoneRecordingUserGesture -= StopRecording;
             _gestureRecorderEvents.OnGestureSelected -= UpdateTransforms;
             _correctTransform.UnregisterCallback(OnHandRootTransformChanged);
         }

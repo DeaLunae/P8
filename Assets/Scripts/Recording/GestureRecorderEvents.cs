@@ -1,27 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Devkit.Modularis.Variables;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu]
 public class GestureRecorderEvents : ScriptableObject
 {
     [SerializeField] private List<Gesture> gestures;
-    private int _gestureIndex = 0;
+    [SerializeField] private IntVariable framesToRecord;
+    public int GetFramesToRecord()
+    {
+        return framesToRecord.Value;
+    }
+    [FormerlySerializedAs("_gestureIndex")] public int _poseIndex = 0;
+    public int NumberOfPoses => gestures.Count;
     private Action<object> onGestureSelected;
     private bool hasOnGestureSelectedInit;
     public event Action<object> OnGestureSelected
     {
         add
         {
-            value.Invoke(gestures[_gestureIndex]);
+            value.Invoke(gestures[_poseIndex]);
             onGestureSelected += value;
         }
         remove => onGestureSelected -= value;
     }
 
-    public Gesture CurrentGesture => gestures[_gestureIndex];
+    public Gesture CurrentGesture => gestures[_poseIndex];
 
     public event Action OnStartRecordingUserGesture;
     public event Action OnDoneRecordingUserGesture;
@@ -48,21 +56,21 @@ public class GestureRecorderEvents : ScriptableObject
         switch (gestureNavigation)
         {
             case GestureNavigation.Back:
-                if (_gestureIndex == 0) return;
-                _gestureIndex--;
+                if (_poseIndex == 0) return;
+                _poseIndex--;
                 break;
             case GestureNavigation.Forward:
-                if (_gestureIndex == gestures.Count - 1) return;
-                _gestureIndex++;
+                if (_poseIndex == gestures.Count - 1) return;
+                _poseIndex++;
                 break;
             case GestureNavigation.Beginning:
-                _gestureIndex = 0;
+                _poseIndex = 0;
                 break;
             case GestureNavigation.End:
-                _gestureIndex = gestures.Count - 1;
+                _poseIndex = gestures.Count - 1;
                 break;
         }
-        onGestureSelected?.Invoke(gestures[_gestureIndex]);
+        onGestureSelected?.Invoke(gestures[_poseIndex]);
     }
 
     public void StartRecordingUserGesture() => OnStartRecordingUserGesture?.Invoke();
@@ -73,5 +81,5 @@ public class GestureRecorderEvents : ScriptableObject
     public void StartReplayDemonstrationGesture() => OnStartReplayDemonstrationGesture?.Invoke();
     public void DoneReplayDemonstrationGesture() => OnDoneReplayDemonstrationGesture?.Invoke();
     public void StartReplayRecordedUserGesture() => OnStartReplayRecordedUserGesture?.Invoke();
-    public void DoneReplayRecordedUserGesture() => OnStartReplayRecordedUserGesture?.Invoke();
+    public void DoneReplayRecordedUserGesture() => OnDoneReplayRecordedUserGesture?.Invoke();
 }

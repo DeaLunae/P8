@@ -50,6 +50,10 @@ namespace MRKTExtensions.Ux
         {
             foreach (var buttonStatusController in FindObjectsOfType<ButtonStatusController>())
             {
+                if (buttonStatusController == this)
+                {
+                    continue;
+                }
                 buttonStatusController.SetStatus(active);
             }
         }
