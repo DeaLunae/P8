@@ -7,8 +7,6 @@ using UnityEngine;
 public class GestureRecorderEventManager : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents gestureRecorderEvents;
-    
-    // Start is called before the first frame update
 
     private void Start()
     {
@@ -16,13 +14,11 @@ public class GestureRecorderEventManager : MonoBehaviour
         {
             Invoke(nameof(setupGesture), 0.2f);
         }
-        
     }
 
     private void setupGesture()
     {
         gestureRecorderEvents.GestureSelected(GestureRecorderEvents.GestureNavigation.Beginning);
-
     }
     public void GestureSelected(GestureNavigationEventEnum gestureNavigationEventEnum)
     {

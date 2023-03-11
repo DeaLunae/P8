@@ -13,7 +13,7 @@ public class Gesture
     [SerializeField] private GestureName gestureName;
     [SerializeField] private GestureType gestureType;
     [SerializeField] private Handedness handedness;
-    [SerializeField] private List<PoseFrameData> demonstrationData = new ();
+    [SerializeField] public List<PoseFrameData> demonstrationData = new ();
     private List<PoseFrameData> _userData = new ();
     public GestureName Name => gestureName;
     public GestureType Type => gestureType;
@@ -124,6 +124,8 @@ public class Gesture
     {
         public List<Vector3> positions;
         public List<Quaternion> rotations;
+        public Vector3 headPosition;
+        public Quaternion headRotation;
         public float time;
 
         public static PoseFrameData Interpolate(PoseFrameData from, PoseFrameData to, float value)
