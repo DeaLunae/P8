@@ -23,7 +23,7 @@ public class ProgressIndicatorEvent : MonoBehaviour
         while (progress < 1)
         {
             progress = (Time.frameCount - currentStartFrame) / (float) _gestureRecorderEvents.GetFramesToRecord();
-            indicator.Message = "Recording Pose...";
+            indicator.Message = "Optager Tegn...";
             indicator.Progress = progress;
             await Task.Yield();
         }
@@ -38,7 +38,7 @@ public class ProgressIndicatorEvent : MonoBehaviour
         while (progress < 1)
         {
             progress = (Time.time - startTime) / (float) currentGesture.GetTotalTime(Gesture.PoseDataType.User);
-            indicator.Message = "Replaying your recording...";
+            indicator.Message = "Afspiller din optagelse...";
             indicator.Progress = progress;
             await Task.Yield();
         }
@@ -53,7 +53,7 @@ public class ProgressIndicatorEvent : MonoBehaviour
         {
             
             progress = (Time.frameCount - startFrame) / (float) currentGesture.FrameCount(Gesture.PoseDataType.Demonstration);
-            indicator.Message = "Demonstrating gesture...";
+            indicator.Message = "Demonstrerer Tegn...";
             indicator.Progress = progress;
             await Task.Yield();
         }

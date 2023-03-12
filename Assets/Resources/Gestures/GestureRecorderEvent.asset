@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gestures:
   - gestureName: 1
-    gestureType: 0
     handedness: 2
     demonstrationData:
     - positions:
@@ -63,209 +62,178 @@ MonoBehaviour:
       - {x: -0.08925874, y: 0.0024942856, z: -0.7051701, w: 0.7033931}
       - {x: 0.0024281272, y: -0.041484766, z: -0.5243545, w: 0.85048544}
       - {x: -2.3283059e-10, y: 0.0000000037252894, z: 0.000000028252536, w: 1}
+      headPosition: {x: 0, y: 0, z: 0}
+      headRotation: {x: 0, y: 0, z: 0, w: 0}
       time: 0
   - gestureName: 1
-    gestureType: 0
     handedness: 1
     demonstrationData: []
   - gestureName: 2
-    gestureType: 0
     handedness: 2
     demonstrationData: []
   - gestureName: 2
-    gestureType: 0
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 3
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 3
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 4
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 4
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 5
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 5
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 6
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 6
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 7
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 7
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 8
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 8
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 9
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 9
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 10
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 10
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 11
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 11
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 12
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 12
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 13
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 13
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 14
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 14
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 15
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 15
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 16
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 16
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 17
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 17
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 18
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 18
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 19
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 19
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 20
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 20
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 21
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 21
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 22
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 22
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 23
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 23
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 24
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 24
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 25
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 25
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 26
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 26
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 27
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 27
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 28
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 28
     handedness: 1
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
+  - gestureName: 29
+    handedness: 2
     demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
-    handedness: 1
-    demonstrationData: []
-  - gestureName: 2
-    gestureType: 0
+  - gestureName: 29
     handedness: 1
     demonstrationData: []
   framesToRecord: {fileID: 11400000, guid: 18da6943830aa1647a2313075eef7220, type: 2}

@@ -25,36 +25,12 @@ public class GestureRecorder : MonoBehaviour
     private int _frameCountOffset;
     private Stopwatch _timeOffset;
     private MixedRealityPose[] jointPoses;
-
-    private string root =
-        $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";
+    
     public static readonly TrackedHandJoint[] _jointIDs =
-    {
-        TrackedHandJoint.Wrist,
-        TrackedHandJoint.Palm,
-        TrackedHandJoint.ThumbProximalJoint,
-        TrackedHandJoint.ThumbDistalJoint,
-        TrackedHandJoint.ThumbTip,
-        TrackedHandJoint.IndexKnuckle,
-        TrackedHandJoint.IndexMiddleJoint,
-        TrackedHandJoint.IndexDistalJoint,
-        TrackedHandJoint.IndexTip,
-        TrackedHandJoint.MiddleKnuckle,
-        TrackedHandJoint.MiddleMiddleJoint,
-        TrackedHandJoint.MiddleDistalJoint,
-        TrackedHandJoint.MiddleTip,
-        TrackedHandJoint.RingKnuckle,
-        TrackedHandJoint.RingMiddleJoint,
-        TrackedHandJoint.RingDistalJoint,
-        TrackedHandJoint.RingTip,
-        TrackedHandJoint.PinkyKnuckle,
-        TrackedHandJoint.PinkyMiddleJoint,
-        TrackedHandJoint.PinkyDistalJoint,
-        TrackedHandJoint.PinkyTip
-    };
+        ((TrackedHandJoint[])Enum.GetValues(typeof(TrackedHandJoint))).Skip(1).ToArray();
 
     private Dictionary<TrackedHandJoint, MixedRealityPose> jointPoseLookup = new();
-
+    private Dictionary<string, float> outputData = new();
     public bool DebugMode;
 
     private void Start()
@@ -62,7 +38,23 @@ public class GestureRecorder : MonoBehaviour
         foreach (var jointid in _jointIDs)
         {
             jointPoseLookup.Add(jointid, MixedRealityPose.ZeroIdentity);
+            outputData.Add($"{jointid}.pos.x", float.NaN);
+            outputData.Add($"{jointid}.pos.y", float.NaN);
+            outputData.Add($"{jointid}.pos.z", float.NaN);
+            
+            outputData.Add($"{jointid}.rot.x", float.NaN);
+            outputData.Add($"{jointid}.rot.y", float.NaN);
+            outputData.Add($"{jointid}.rot.z", float.NaN);
+            outputData.Add($"{jointid}.rot.w", float.NaN);
         }
+        outputData.Add("Head.pos.x",float.NaN);
+        outputData.Add("Head.pos.y",float.NaN);
+        outputData.Add("Head.pos.z",float.NaN);
+
+        outputData.Add("Head.rot.x",float.NaN);
+        outputData.Add("Head.rot.y",float.NaN);
+        outputData.Add("Head.rot.z",float.NaN);
+        outputData.Add("Head.rot.w",float.NaN);
         _loggingManager = FindObjectOfType<LoggingManager>();
         _loggingManager.SetEmail("NA");
         
@@ -85,6 +77,7 @@ public class GestureRecorder : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
+        string root = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";;
         GetOrCreateDirectory($"{root}");
         if (DebugMode)
         {
@@ -153,17 +146,17 @@ public class GestureRecorder : MonoBehaviour
         {
             return;
         }
-
-        CalculateJointFeatures(jointPoseLookup, ref features);
+        GenerateDataSet(jointPoseLookup, ref outputData);
+        //CalculateJointFeatures(jointPoseLookup, ref features);
         
-        var log = GenerateLog(features);
+        var log = GenerateLog(outputData);
         if (log == null)
         {
             return;
         }
         _loggingManager.Log($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}", log);
     }
-    private static List<TrackedHandJoint> keys = new List<TrackedHandJoint>();
+    private static List<TrackedHandJoint> keys = new();
     public static bool TryCalculateJointPoses(Handedness handedness, ref Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
     {
         keys.Clear();
@@ -176,6 +169,7 @@ public class GestureRecorder : MonoBehaviour
         }
         return true;
     }
+    
     public const string D_Palm_ThumbTip = "D_Palm_ThumbTip";
     public const string D_Palm_IndexTip = "D_Palm_IndexTip";
     public const string D_Palm_MiddleTip = "D_Palm_MiddleTip";
@@ -189,8 +183,7 @@ public class GestureRecorder : MonoBehaviour
     public const string Palm_Rot_Y = "Palm_Rot_Y";
     public const string Palm_Rot_Z = "Palm_Rot_Z";
     public const string Palm_Rot_W = "Palm_Rot_W";
-    private Dictionary<string, float> features = new()
-    {
+    private Dictionary<string, float> features = new() {
         {D_IndexTip_MiddleTip,0},
         {D_MiddleTip_RingTip,0},
         {D_Palm_IndexTip,0},
@@ -206,7 +199,32 @@ public class GestureRecorder : MonoBehaviour
         {Palm_Rot_Z,0}*/
     };
 
+    private void GenerateDataSet(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, ref Dictionary<string, float> output)
+    {
+        foreach (var (joint, pose) in jointPoses)
+        {
+            var jointStr = joint.ToString();
+            output[$"{jointStr}.pos.x"] =  pose.Position.x;
+            output[$"{jointStr}.pos.y"] =  pose.Position.y;
+            output[$"{jointStr}.pos.z"] =  pose.Position.z;
+            
+            output[$"{jointStr}.rot.x"] =  pose.Rotation.x;
+            output[$"{jointStr}.rot.y"] =  pose.Rotation.y;
+            output[$"{jointStr}.rot.z"] =  pose.Rotation.z;
+            output[$"{jointStr}.rot.w"] =  pose.Rotation.w;
+        }
 
+        var headpos = CameraCache.Main.transform.position;
+        var headrot = CameraCache.Main.transform.rotation;
+        output["Head.pos.x"] =  headpos.x;
+        output["Head.pos.y"] =  headpos.y;
+        output["Head.pos.z"] =  headpos.z;
+        
+        output["Head.rot.x"] =  headrot.x;
+        output["Head.rot.y"] =  headrot.y;
+        output["Head.rot.z"] =  headrot.z;
+        output["Head.rot.w"] =  headrot.w;
+    }
     public static void CalculateJointFeatures(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, ref Dictionary<string, float> features)
     {
         //D_Palm_ThumbTip

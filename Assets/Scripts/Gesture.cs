@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Microsoft.MixedReality.Toolkit.Utilities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,13 +11,18 @@ using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
 public class Gesture
 {
     [SerializeField] private GestureName gestureName;
-    [SerializeField] private GestureType gestureType;
     [SerializeField] private Handedness handedness;
     [SerializeField] public List<PoseFrameData> demonstrationData = new ();
     private List<PoseFrameData> _userData = new ();
     public GestureName Name => gestureName;
-    public GestureType Type => gestureType;
     public Handedness Handedness => handedness;
+
+    public List<PoseFrameData> UserData
+    {
+        get => _userData;
+        set => _userData = value;
+    }
+
     public int FrameCount(PoseDataType dataType)
     {
         switch (dataType)
@@ -25,7 +30,7 @@ public class Gesture
             case PoseDataType.Demonstration:
                 return demonstrationData.Count;
             case PoseDataType.User:
-                return _userData.Count;
+                return UserData.Count;
         }
         return -1;
     }
@@ -41,11 +46,11 @@ public class Gesture
                 }
                 return demonstrationData.LastOrDefault().time;
             case PoseDataType.User:
-                if (_userData.Count == 0)
+                if (UserData.Count == 0)
                 {
                     break;
                 }
-                return _userData.LastOrDefault().time;
+                return UserData.LastOrDefault().time;
         }
         return 1f;
     }
@@ -57,7 +62,7 @@ public class Gesture
                 demonstrationData.Clear();
                 break;
             case PoseDataType.User:
-                _userData.Clear();
+                UserData.Clear();
                 break;
         }
     }
@@ -69,7 +74,7 @@ public class Gesture
             case PoseDataType.Demonstration:
                 return demonstrationData[i];
             case PoseDataType.User:
-                return _userData[i];
+                return UserData[i];
         }
         return new PoseFrameData();
     }
@@ -83,7 +88,7 @@ public class Gesture
                 correctDataset = demonstrationData;
                 break;
             case PoseDataType.User:
-                correctDataset = _userData;
+                correctDataset = UserData;
                 break;
         }
         if (time >= GetTotalTime(dataType))
@@ -108,14 +113,14 @@ public class Gesture
     
     public void AddPoseFrame(PoseDataType dataType, PoseFrameData poseFrameData)
     {
-        poseFrameData.positions[0] = Vector3.zero;
         switch (dataType)
         {
             case PoseDataType.Demonstration:
+                poseFrameData.positions[0] = Vector3.zero;
                 demonstrationData.Insert(0,poseFrameData);
                 break;
             case PoseDataType.User:
-                _userData.Add(poseFrameData);
+                UserData.Add(poseFrameData);
                 break;
         }
     }
@@ -139,6 +144,7 @@ public class Gesture
                 poseFrameData.rotations.Add(Quaternion.Lerp(from.rotations[i],to.rotations[i],value));
             }
             poseFrameData.time = from.time + (to.time - from.time) * value;
+            
             return poseFrameData;
         }
     }
@@ -172,14 +178,12 @@ public class Gesture
         W, 
         X, 
         Y, 
-        Z
+        Z,
+        Æ,
+        Ø,
+        Å
     }
-    [Serializable]
-    public enum GestureType
-    {
-        Static,
-        Dynamic
-    }
+
 
     [Serializable]
     public enum PoseDataType

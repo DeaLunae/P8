@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.MixedReality.Toolkit;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using Unity.Mathematics;
 
 public class MirrorTransforms : MonoBehaviour
 {
@@ -25,6 +27,8 @@ public class MirrorTransforms : MonoBehaviour
     private float _stopTime;
     private Gesture.PoseFrameData _currentPoseFrameData;
     private int _currentIndex;
+    private Vector3 _timeSeriesCenter;
+
     void Start()
     {
         _anchorTransform = transform.parent;
@@ -71,7 +75,8 @@ public class MirrorTransforms : MonoBehaviour
                 _currentPoseFrameData.positions[i],
                 _currentPoseFrameData.rotations[i]);
         }
-        transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
+        _targetTransforms[0].position = _anchorTransform.position + (_currentPoseFrameData.positions[0] - _timeSeriesCenter);
+        //transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
     }
     
     private Vector3 GetCenterPosition()
@@ -110,8 +115,16 @@ public class MirrorTransforms : MonoBehaviour
         _currentIndex = 0;
         _stopwatch = Stopwatch.StartNew();
         _stopTime = _gestureRecorderEvents.CurrentGesture.GetTotalTime(Gesture.PoseDataType.User) * 1000;
+        _timeSeriesCenter = CalculateCenterOfTimeSeries();
     }
 
+    private Vector3 CalculateCenterOfTimeSeries()
+    {
+        List<Gesture.PoseFrameData> timeseries = _gestureRecorderEvents.CurrentGesture.UserData;
+        List<Vector3> wristPositions = timeseries.Select(e => e.positions[0]).ToList();
+        return wristPositions.Average();
+    }
+   
     private void DelayedDone()
     {
         _gestureRecorderEvents.DoneReplayRecordedUserGesture();

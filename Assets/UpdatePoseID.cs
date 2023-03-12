@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
 using UnityEngine;
 
@@ -26,6 +27,6 @@ public class UpdatePoseID : MonoBehaviour
 
     private void UpdateText(object obj)
     {
-        text.SetText($"Pose {gre._poseIndex+1} / {gre.NumberOfPoses}: {gre.CurrentGesture.Name} {gre.CurrentGesture.Handedness.ToString()}");
+        text.SetText($"Pose {gre._poseIndex+1} / {gre.NumberOfPoses}: {gre.CurrentGesture.Name} {(gre.CurrentGesture.Handedness == Handedness.Left ? "Venstre" : "Højre")}");
     }
 }
