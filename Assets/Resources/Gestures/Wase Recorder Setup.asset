@@ -10,61 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89b1545ddc61d344e8c7dfb8a1370289, type: 3}
-  m_Name: GestureRecorderEvent
+  m_Name: Wase Recorder Setup
   m_EditorClassIdentifier: 
   gestures:
   - gestureName: 1
     handedness: 2
-    demonstrationData:
-    - positions:
-      - {x: 0, y: 0, z: 0}
-      - {x: 0.0956466, y: -0.0025431497, z: 0.00172591}
-      - {x: 0.042927485, y: 0.000000044256442, z: 0.00000004303833}
-      - {x: 0.02754948, y: -0.000000008697625, z: -0.0000000043207042}
-      - {x: 0.02153446, y: -0.0007498329, z: -0.00042790073}
-      - {x: 0.09599619, y: -0.0073164497, z: 0.0235507}
-      - {x: 0.037927542, y: -0.000000003970747, z: -0.00000006397446}
-      - {x: 0.024303336, y: -0.00000005532116, z: 0.000000027938826}
-      - {x: 0.018976064, y: -0.0003956843, z: 0.00031605223}
-      - {x: 0.0886938, y: -0.00652931, z: -0.0174652}
-      - {x: 0.038995683, y: -0.00000002172989, z: -0.00000016482554}
-      - {x: 0.026573893, y: 0.00000005574667, z: 0.00000013098294}
-      - {x: 0.020740619, y: 0.0005127103, z: 0.0003872611}
-      - {x: 0.035958398, y: -0.0191577, z: 0.0280285}
-      - {x: 0.032512937, y: -0.00000004853313, z: -0.000000050375828}
-      - {x: 0.03379311, y: 0.000000031290845, z: 0.000000031544317}
-      - {x: 0.0195977, y: -0.000000018622034, z: -0.000000020221448}
-      - {x: 0.0340736, y: -0.00941984, z: -0.0229986}
-      - {x: 0.045650464, y: -0.0000010053262, z: 0.0000021577941}
-      - {x: 0.031195825, y: -0.000040421928, z: -0.00073676585}
-      - {x: 0.021030229, y: 0.00012243704, z: -0.00013052128}
-      - {x: 0.018369101, y: 0.0002471058, z: 0.00054100883}
-      rotations:
-      - {x: -0.43362606, y: -0.635911, z: 0.30193013, w: 0.5625157}
-      - {x: -0.042906553, y: 0.08425343, z: -0.42743835, w: 0.8990868}
-      - {x: -0.012396983, y: -0.0051865014, z: -0.7273045, w: 0.68618333}
-      - {x: -0.086385965, y: -0.021162568, z: -0.4955829, w: 0.86399496}
-      - {x: -0, y: -0, z: 0.00000001455191, w: 1}
-      - {x: 0.028990682, y: -0.0026625989, z: -0.00008630752, w: 0.99957615}
-      - {x: -0.026201095, y: 0.0048099863, z: -0.091356754, w: 0.9954619}
-      - {x: -0.016367745, y: 0.026302073, z: 0.016670264, w: 0.99938107}
-      - {x: -0, y: -0.0000000018626445, z: -0, w: 1}
-      - {x: -0.11355038, y: 0.09353598, z: -0.5510244, w: 0.82141924}
-      - {x: -0.0413667, y: -0.022237523, z: -0.7248015, w: 0.6873551}
-      - {x: -0.02862409, y: -0.027358081, z: -0.5258388, w: 0.8496622}
-      - {x: -0, y: -0.0000000018626447, z: -0.000000044354227, w: 1}
-      - {x: 0.6282354, y: -0.3910532, z: -0.006685375, w: 0.67257196}
-      - {x: -0.08270376, y: 0.076961644, z: 0.0840622, w: 0.99003565}
-      - {x: 0.08459132, y: -0.07050263, z: 0.12993027, w: 0.9853892}
-      - {x: -0, y: -0, z: -0.0000000013969834, w: 1}
-      - {x: -0.20703599, y: 0.14034285, z: -0.0183118, w: 0.96804166}
-      - {x: 0.042460438, y: 0.061185636, z: -0.57407445, w: 0.8154091}
-      - {x: -0.08925874, y: 0.0024942856, z: -0.7051701, w: 0.7033931}
-      - {x: 0.0024281272, y: -0.041484766, z: -0.5243545, w: 0.85048544}
-      - {x: -2.3283059e-10, y: 0.0000000037252894, z: 0.000000028252536, w: 1}
-      headPosition: {x: 0, y: 0, z: 0}
-      headRotation: {x: 0, y: 0, z: 0, w: 0}
-      time: 0
+    demonstrationData: []
   - gestureName: 1
     handedness: 1
     demonstrationData: []
@@ -132,7 +83,7 @@ MonoBehaviour:
     handedness: 2
     demonstrationData: []
   - gestureName: 12
-    handedness: 2
+    handedness: 1
     demonstrationData: []
   - gestureName: 13
     handedness: 2
@@ -234,6 +185,72 @@ MonoBehaviour:
     handedness: 2
     demonstrationData: []
   - gestureName: 29
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 30
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 30
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 31
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 31
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 32
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 32
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 33
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 33
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 34
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 34
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 35
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 35
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 36
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 36
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 37
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 37
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 38
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 38
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 39
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 39
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 40
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 40
     handedness: 1
     demonstrationData: []
   framesToRecord: {fileID: 11400000, guid: 18da6943830aa1647a2313075eef7220, type: 2}
