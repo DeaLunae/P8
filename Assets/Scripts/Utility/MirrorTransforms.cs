@@ -114,6 +114,7 @@ public class MirrorTransforms : MonoBehaviour
         _replayingActive = true;
         _currentIndex = 0;
         _stopwatch = Stopwatch.StartNew();
+        transform.position = _anchorTransform.position + _anchorTransform.position - GetCenterPosition();
         _stopTime = _gestureRecorderEvents.CurrentGesture.GetTotalTime(Gesture.PoseDataType.User) * 1000;
         _timeSeriesCenter = CalculateCenterOfTimeSeries();
     }
