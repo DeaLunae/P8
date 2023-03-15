@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 3973d36a2cc0c81489a5e9623a6d38b5
+    path: Assets/Scenes/GestureRecorder.unity
+    guid: 273340d4fdb1ebc41a771387cec1e25b
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: cfb26b6cfb71d8147a2c4bb63585581f,
       type: 2}

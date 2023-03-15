@@ -43,6 +43,9 @@ MonoBehaviour:
   - gestureName: 10
     handedness: 2
     demonstrationData: []
+  - gestureName: 10
+    handedness: 1
+    demonstrationData: []
   - gestureName: 11
     handedness: 2
     demonstrationData: []
@@ -90,6 +93,9 @@ MonoBehaviour:
     demonstrationData: []
   - gestureName: 26
     handedness: 2
+    demonstrationData: []
+  - gestureName: 26
+    handedness: 1
     demonstrationData: []
   - gestureName: 27
     handedness: 2
