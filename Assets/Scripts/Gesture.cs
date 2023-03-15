@@ -22,17 +22,19 @@ public class Gesture
         get => _userData;
         set => _userData = value;
     }
-
+    public Gesture(GestureName gestureName, Handedness handedness)
+    {
+        this.gestureName = gestureName;
+        this.handedness = handedness;
+    }
     public int FrameCount(PoseDataType dataType)
     {
-        switch (dataType)
+        return dataType switch
         {
-            case PoseDataType.Demonstration:
-                return demonstrationData.Count;
-            case PoseDataType.User:
-                return UserData.Count;
-        }
-        return -1;
+            PoseDataType.Demonstration => (int)demonstrationData.Last().time,
+            PoseDataType.User => UserData.Count,
+            _ => -1
+        };
     }
 
     public float GetTotalTime(PoseDataType dataType)
@@ -182,17 +184,17 @@ public class Gesture
         Æ,
         Ø,
         Å,
-        N0,
-        N1,
-        N2,
-        N3,
-        N4,
-        N5,
-        N6,
-        N7,
-        N8,
-        N9,
-        N10
+        Nummer0,
+        Nummer1,
+        Nummer2,
+        Nummer3,
+        Nummer4,
+        Nummer5,
+        Nummer6,
+        Nummer7,
+        Nummer8,
+        Nummer9,
+        Nummer10
     }
 
 

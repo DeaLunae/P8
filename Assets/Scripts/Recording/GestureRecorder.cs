@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Threading;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -16,9 +17,10 @@ public class GestureRecorder : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     private Gesture currentGesture;
-    [SerializeField] private int FramesToRecord = 480;
+    [SerializeField] private Transform leftHand, rightHand;
+    private Transform[] _leftHandRootTransforms, _rightHandRootTransforms, _currentRootTransforms;
     public TrackedHandJoint ReferenceJoint { get; set; } = TrackedHandJoint.Wrist;
-    private bool DoneRecording => Time.frameCount - _frameCountOffset >= FramesToRecord;
+    private bool DoneRecording => Time.frameCount - _frameCountOffset >= _gestureRecorderEvents.GetFramesToRecord();
     private Handedness recordingHand = Handedness.None;
     private bool isRecording, leftRecording, rightRecording;
     private LoggingManager _loggingManager;
@@ -55,6 +57,7 @@ public class GestureRecorder : MonoBehaviour
         outputData.Add("Head.rot.y",float.NaN);
         outputData.Add("Head.rot.z",float.NaN);
         outputData.Add("Head.rot.w",float.NaN);
+        
         _loggingManager = FindObjectOfType<LoggingManager>();
         _loggingManager.SetEmail("NA");
         
@@ -64,8 +67,12 @@ public class GestureRecorder : MonoBehaviour
             _gestureRecorderEvents.OnGestureSelected += GestureSelected;
             _gestureRecorderEvents.OnStartRecordingUserGesture += StartRecordingUserGesture;
         }
+
+        Application.wantsToQuit += SaveAllData;
+        
     }
 
+    
     private DirectoryInfo GetOrCreateDirectory(string path)
     {
         var directoryInfo = new DirectoryInfo(path);
@@ -75,7 +82,9 @@ public class GestureRecorder : MonoBehaviour
         }
         return directoryInfo;
     }
-    private void OnApplicationQuit()
+    
+
+    public bool SaveAllData()
     {
         string root = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";;
         GetOrCreateDirectory($"{root}");
@@ -90,9 +99,16 @@ public class GestureRecorder : MonoBehaviour
             DirectoryInfo partDirInf = GetOrCreateDirectory(currLargSubDirNr.Length == 0 ? $"{root}\\{0}" : $"{root}\\{int.Parse(currLargSubDirNr[0].Name)+1}");
             _loggingManager.SetSavePath(partDirInf.FullName);
         }
-        _loggingManager.SaveAllLogs(true);
+        _loggingManager.SaveAllLogs(true,TargetType.CSV);
+        Invoke(nameof(DelayedApplicationQuit), 5f);
+        return false;
     }
 
+    private void DelayedApplicationQuit()
+    {
+        Application.wantsToQuit -= SaveAllData;
+        Application.Quit();
+    }
     private void OnDestroy()
     {
         if (_gestureRecorderEvents != null)
@@ -100,26 +116,28 @@ public class GestureRecorder : MonoBehaviour
             _gestureRecorderEvents.OnGestureSelected -= GestureSelected;
             _gestureRecorderEvents.OnStartRecordingUserGesture -= StartRecordingUserGesture;
         }
+        Application.wantsToQuit -= SaveAllData;
     }
 
     private void GestureSelected(object o)
     {
         currentGesture = (Gesture)o;
     }
-    
+    public string GenerateLogName() => $"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}-{_gestureRecorderEvents._poseIndex.ToString()}";
+
     public void StartRecordingUserGesture()
     {
         HandJointUtils.TryGetJointPose(ReferenceJoint, currentGesture.Handedness, out MixedRealityPose joint);
-        
         recordingHand = currentGesture.Handedness;
         _frameCountOffset = Time.frameCount;
         _timeOffset = Stopwatch.StartNew();
+        var logstring = GenerateLogName();
         
-        if (_loggingManager.HasLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}"))
+        if (_loggingManager.HasLog(logstring))
         {
-            _loggingManager.DeleteLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}");
+            _loggingManager.DeleteLog(logstring);
         }
-        _loggingManager.CreateLog($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}");
+        _loggingManager.CreateLog(logstring);
         
         isRecording = true;
     }
@@ -154,7 +172,7 @@ public class GestureRecorder : MonoBehaviour
         {
             return;
         }
-        _loggingManager.Log($"gesture-{currentGesture.Name.ToString()}-{currentGesture.Handedness.ToString()}", log);
+        _loggingManager.Log(GenerateLogName(), log);
     }
     private static List<TrackedHandJoint> keys = new();
     public static bool TryCalculateJointPoses(Handedness handedness, ref Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
@@ -269,8 +287,6 @@ public class GestureRecorder : MonoBehaviour
         output.Add("Handedness", recordingHand.ToString());
         output.Add("Timestamp", _timeOffset.ElapsedMilliseconds.ToString());
         output.Add("Framecount", Time.frameCount - _frameCountOffset);
-        output.Add("SessionID", "NA");
-        output.Add("Email", "NA");
         foreach (var feature in feats)
         {
             output.Add(feature.Key,feature.Value);

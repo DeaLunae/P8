@@ -145,6 +145,17 @@ public class LoggingManager : MonoBehaviour
         logsList.Add(collectionLabel, logStore);
     }
 
+    public bool AreLogsEmpty()
+    {
+        foreach (var logstore in logsList.Values)
+        {
+            if (logstore.RowCount != 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void Log(string collectionLabel, Dictionary<string, object> logData)
     {
@@ -318,7 +329,6 @@ public class LoggingManager : MonoBehaviour
         }
     }
 
-
     public void SaveAllLogs(bool clear)
     {
         foreach (KeyValuePair<string, LogStore> pair in logsList)
@@ -347,6 +357,7 @@ public class LoggingManager : MonoBehaviour
                 return;
             }
         }
+        
         //All targets have been saved, we can clear the logs
         logStore.Clear();
         logStore.ResetTargetsSaved();

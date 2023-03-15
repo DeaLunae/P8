@@ -49,7 +49,6 @@ public class WriteToCSV
         {
             logStore.EndRow();
         }
-
         new Thread(() =>
         {
             Write();
@@ -102,5 +101,4 @@ public class WriteToCSV
             writeTs.Seconds, writeTs.Milliseconds);
         Debug.Log(logStore.Label + " logs wrote to file in " + writeElapsedTime);
     }
-
 }

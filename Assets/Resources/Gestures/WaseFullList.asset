@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c91ccea511498aa2c417a5cc5f313c, type: 3}
+  m_Name: WaseFullList
+  m_EditorClassIdentifier: 
+  list:
+  - gestureName: 1
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 2
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 3
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 4
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 5
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 6
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 7
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 8
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 9
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 10
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 10
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 11
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 12
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 13
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 14
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 15
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 16
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 17
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 18
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 19
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 20
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 21
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 22
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 23
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 24
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 25
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 26
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 26
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 27
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 28
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 28
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 29
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 29
+    handedness: 1
+    demonstrationData: []
+  - gestureName: 30
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 31
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 32
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 33
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 34
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 35
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 36
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 37
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 38
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 39
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 40
+    handedness: 2
+    demonstrationData: []
+  - gestureName: 40
+    handedness: 1
+    demonstrationData: []

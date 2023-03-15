@@ -9,27 +9,27 @@ using UnityEngine.Serialization;
 [CreateAssetMenu]
 public class GestureRecorderEvents : ScriptableObject
 {
-    [SerializeField] private List<Gesture> gestures;
+    [SerializeField] private GestureList gestures;
     [SerializeField] private IntVariable framesToRecord;
     public int GetFramesToRecord()
     {
         return framesToRecord.Value;
     }
     [FormerlySerializedAs("_gestureIndex")] public int _poseIndex = 0;
-    public int NumberOfPoses => gestures.Count;
+    public int NumberOfPoses => gestures.list.Count;
     private Action<object> onGestureSelected;
     private bool hasOnGestureSelectedInit;
     public event Action<object> OnGestureSelected
     {
         add
         {
-            value.Invoke(gestures[_poseIndex]);
+            value.Invoke(gestures.list[_poseIndex]);
             onGestureSelected += value;
         }
         remove => onGestureSelected -= value;
     }
 
-    public Gesture CurrentGesture => gestures[_poseIndex];
+    public Gesture CurrentGesture => gestures.list[_poseIndex];
 
     public event Action OnStartRecordingUserGesture;
     public event Action OnDoneRecordingUserGesture;
@@ -60,17 +60,17 @@ public class GestureRecorderEvents : ScriptableObject
                 _poseIndex--;
                 break;
             case GestureNavigation.Forward:
-                if (_poseIndex == gestures.Count - 1) return;
+                if (_poseIndex == gestures.list.Count - 1) return;
                 _poseIndex++;
                 break;
             case GestureNavigation.Beginning:
                 _poseIndex = 0;
                 break;
             case GestureNavigation.End:
-                _poseIndex = gestures.Count - 1;
+                _poseIndex = gestures.list.Count - 1;
                 break;
         }
-        onGestureSelected?.Invoke(gestures[_poseIndex]);
+        onGestureSelected?.Invoke(gestures.list[_poseIndex]);
     }
 
     public void StartRecordingUserGesture() => OnStartRecordingUserGesture?.Invoke();
