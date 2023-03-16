@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
@@ -16,16 +17,16 @@ public class Gesture
     private List<PoseFrameData> _userData = new ();
     public GestureName Name => gestureName;
     public Handedness Handedness => handedness;
-
     public List<PoseFrameData> UserData
     {
-        get => _userData;
+        get => _userData ??= new List<PoseFrameData>();
         set => _userData = value;
     }
     public Gesture(GestureName gestureName, Handedness handedness)
     {
         this.gestureName = gestureName;
         this.handedness = handedness;
+        _userData = new List<PoseFrameData>();
     }
     public int FrameCount(PoseDataType dataType)
     {

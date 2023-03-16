@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Threading;
+using Devkit.Modularis.Channels;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -17,7 +18,7 @@ public class GestureRecorder : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     private Gesture currentGesture;
-    [SerializeField] private Transform leftHand, rightHand;
+    [SerializeField] private TransformChannel leftHand, rightHand;
     private Transform[] _leftHandRootTransforms, _rightHandRootTransforms, _currentRootTransforms;
     public TrackedHandJoint ReferenceJoint { get; set; } = TrackedHandJoint.Wrist;
     private bool DoneRecording => Time.frameCount - _frameCountOffset >= _gestureRecorderEvents.GetFramesToRecord();
@@ -27,7 +28,7 @@ public class GestureRecorder : MonoBehaviour
     private int _frameCountOffset;
     private Stopwatch _timeOffset;
     private MixedRealityPose[] jointPoses;
-    
+    public int secondsToWait;
     public static readonly TrackedHandJoint[] _jointIDs =
         ((TrackedHandJoint[])Enum.GetValues(typeof(TrackedHandJoint))).Skip(1).ToArray();
 
@@ -37,6 +38,19 @@ public class GestureRecorder : MonoBehaviour
 
     private void Start()
     {
+        leftHand.RegisterCallback(OnLeftHandChannelUpdate);
+        rightHand.RegisterCallback(OnRightHandChannelUpdate);
+        for (int i = 0; i < 22; i++)
+        {
+            outputData.Add($"Transform.Index.{i}.pos.x", float.NaN);
+            outputData.Add($"Transform.Index.{i}.pos.y", float.NaN);
+            outputData.Add($"Transform.Index.{i}.pos.z", float.NaN);
+            
+            outputData.Add($"Transform.Index.{i}.rot.x", float.NaN);
+            outputData.Add($"Transform.Index.{i}.rot.y", float.NaN);
+            outputData.Add($"Transform.Index.{i}.rot.z", float.NaN);
+            outputData.Add($"Transform.Index.{i}.rot.w", float.NaN);
+        }
         foreach (var jointid in _jointIDs)
         {
             jointPoseLookup.Add(jointid, MixedRealityPose.ZeroIdentity);
@@ -48,6 +62,7 @@ public class GestureRecorder : MonoBehaviour
             outputData.Add($"{jointid}.rot.y", float.NaN);
             outputData.Add($"{jointid}.rot.z", float.NaN);
             outputData.Add($"{jointid}.rot.w", float.NaN);
+            
         }
         outputData.Add("Head.pos.x",float.NaN);
         outputData.Add("Head.pos.y",float.NaN);
@@ -67,12 +82,20 @@ public class GestureRecorder : MonoBehaviour
             _gestureRecorderEvents.OnGestureSelected += GestureSelected;
             _gestureRecorderEvents.OnStartRecordingUserGesture += StartRecordingUserGesture;
         }
-
         Application.wantsToQuit += SaveAllData;
-        
     }
 
-    
+    private void OnLeftHandChannelUpdate()
+    {
+        _leftHandRootTransforms = leftHand.isSet ? leftHand.Value.GetComponentsInChildren<Transform>() : null;
+
+    }
+
+    private void OnRightHandChannelUpdate()
+    {
+        _rightHandRootTransforms = rightHand.isSet ? rightHand.Value.GetComponentsInChildren<Transform>() : null;
+    }
+
     private DirectoryInfo GetOrCreateDirectory(string path)
     {
         var directoryInfo = new DirectoryInfo(path);
@@ -82,11 +105,17 @@ public class GestureRecorder : MonoBehaviour
         }
         return directoryInfo;
     }
-    
 
+    private bool savingHasBegun = false;
     public bool SaveAllData()
     {
-        string root = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";;
+        if (savingHasBegun)
+        {
+            return false;
+        }
+        savingHasBegun = true;
+        string root = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\P8GestureData";
+        
         GetOrCreateDirectory($"{root}");
         if (DebugMode)
         {
@@ -95,12 +124,13 @@ public class GestureRecorder : MonoBehaviour
         }
         else
         {
-            var currLargSubDirNr = new DirectoryInfo($"{root}").GetDirectories().Where(e => int.TryParse(e.Name,out _)).OrderByDescending(e => e.Name).ToArray();
-            DirectoryInfo partDirInf = GetOrCreateDirectory(currLargSubDirNr.Length == 0 ? $"{root}\\{0}" : $"{root}\\{int.Parse(currLargSubDirNr[0].Name)+1}");
+            var currLargSubDirNr = new DirectoryInfo($"{root}").GetDirectories().Where(e => int.TryParse(e.Name, out _))
+                .Select(e => int.Parse(e.Name)).OrderByDescending(e => e).ToArray();
+            DirectoryInfo partDirInf = GetOrCreateDirectory(currLargSubDirNr.Length == 0 ? $"{root}\\{0}" : $"{root}\\{int.Parse(currLargSubDirNr.First().ToString())+1}");
             _loggingManager.SetSavePath(partDirInf.FullName);
         }
         _loggingManager.SaveAllLogs(true,TargetType.CSV);
-        Invoke(nameof(DelayedApplicationQuit), 5f);
+        Invoke(nameof(DelayedApplicationQuit), secondsToWait);
         return false;
     }
 
@@ -111,6 +141,8 @@ public class GestureRecorder : MonoBehaviour
     }
     private void OnDestroy()
     {
+        leftHand.UnregisterCallback(OnLeftHandChannelUpdate);
+        rightHand.UnregisterCallback(OnRightHandChannelUpdate);
         if (_gestureRecorderEvents != null)
         {
             _gestureRecorderEvents.OnGestureSelected -= GestureSelected;
@@ -164,6 +196,7 @@ public class GestureRecorder : MonoBehaviour
         {
             return;
         }
+        
         GenerateDataSet(jointPoseLookup, ref outputData);
         //CalculateJointFeatures(jointPoseLookup, ref features);
         
@@ -217,8 +250,44 @@ public class GestureRecorder : MonoBehaviour
         {Palm_Rot_Z,0}*/
     };
 
+    private bool hasBeenSetUp;
+
     private void GenerateDataSet(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, ref Dictionary<string, float> output)
     {
+        _currentRootTransforms = recordingHand == Handedness.Left ? _leftHandRootTransforms : _rightHandRootTransforms;
+        if (_currentRootTransforms == null)
+        {
+            for (var i = 0; i < 22; i++)
+            {
+                output[$"Transform.Index.{i}.pos.x"] = float.NaN;
+                output[$"Transform.Index.{i}.pos.y"] = float.NaN;
+                output[$"Transform.Index.{i}.pos.z"] = float.NaN;
+                
+                output[$"Transform.Index.{i}.rot.x"] = float.NaN;
+                output[$"Transform.Index.{i}.rot.y"] = float.NaN;
+                output[$"Transform.Index.{i}.rot.z"] = float.NaN;
+                output[$"Transform.Index.{i}.rot.w"] = float.NaN;
+            }
+        }
+        else
+        {
+            for (var i = 0; i < _currentRootTransforms.Length; i++)
+            {
+                var articulatedTransform =
+                    (recordingHand == Handedness.Left ? _leftHandRootTransforms : _rightHandRootTransforms)[i];
+                var position = i == 0 ? articulatedTransform.position : articulatedTransform.localPosition;
+                output[$"Transform.Index.{i}.pos.x"] = position.x;
+                output[$"Transform.Index.{i}.pos.y"] = position.y;
+                output[$"Transform.Index.{i}.pos.z"] = position.z;
+
+                var rotation = articulatedTransform.localRotation;
+                output[$"Transform.Index.{i}.rot.x"] = rotation.x;
+                output[$"Transform.Index.{i}.rot.y"] = rotation.y;
+                output[$"Transform.Index.{i}.rot.z"] = rotation.z;
+                output[$"Transform.Index.{i}.rot.w"] = rotation.w;
+            }
+        }
+
         foreach (var (joint, pose) in jointPoses)
         {
             var jointStr = joint.ToString();

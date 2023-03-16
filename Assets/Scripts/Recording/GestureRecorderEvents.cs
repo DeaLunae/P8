@@ -15,7 +15,7 @@ public class GestureRecorderEvents : ScriptableObject
     {
         return framesToRecord.Value;
     }
-    [FormerlySerializedAs("_gestureIndex")] public int _poseIndex = 0;
+    public int _poseIndex = 0;
     public int NumberOfPoses => gestures.list.Count;
     private Action<object> onGestureSelected;
     private bool hasOnGestureSelectedInit;

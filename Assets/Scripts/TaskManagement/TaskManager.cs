@@ -86,16 +86,9 @@ public class TaskManager : MonoBehaviour
         }
         else
         {
-            var currentLargestSubDirectoryNumber = new DirectoryInfo($"{_root}").GetDirectories().Where(e => int.TryParse(e.Name,out _)).OrderByDescending(e => e.Name).ToArray();
+            var currentLargestSubDirectoryNumber = new DirectoryInfo($"{_root}").GetDirectories().Where(e => int.TryParse(e.Name,out _)).OrderByDescending(e => e).ToArray();
             DirectoryInfo dirinfo;
-            if (currentLargestSubDirectoryNumber.Length == 0)
-            {
-                dirinfo = new DirectoryInfo($"{_root}\\{0}");
-            }
-            else
-            {
-                dirinfo = new DirectoryInfo($"{_root}\\{int.Parse(currentLargestSubDirectoryNumber[0].Name)+1}");
-            }
+            dirinfo = currentLargestSubDirectoryNumber.Length == 0 ? new DirectoryInfo($"{_root}\\{0}") : new DirectoryInfo($"{_root}\\{int.Parse(currentLargestSubDirectoryNumber[0].Name)+1}");
             if (!dirinfo.Exists)
             {
                 dirinfo.Create();

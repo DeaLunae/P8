@@ -12,7 +12,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
-            Invoke(nameof(setupGesture), 0.2f);
+            Invoke(nameof(setupGesture), 1f);
         }
     }
 

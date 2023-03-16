@@ -95,7 +95,7 @@ Material:
     - _BorderLightOpaqueAlpha: 1
     - _BorderLightReplacesAlbedo: 1
     - _BorderLightUsesHoverColor: 0
-    - _BorderMinValue: 1
+    - _BorderMinValue: 0.66
     - _BorderWidth: 1
     - _BorderWidthHorizontal: 0.1
     - _BorderWidthVertical: 0.1
