@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Devkit.Modularis.Channels;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
 
 public class UserPoseRecorder : MonoBehaviour
@@ -13,6 +15,7 @@ public class UserPoseRecorder : MonoBehaviour
     private Transform[] _transforms;
     private bool _isRecording;
     private float _recordingStartTime;
+    private long _stoptime;
 
 
     private void OnHandRootTransformChanged()
@@ -38,13 +41,17 @@ public class UserPoseRecorder : MonoBehaviour
         _recordingStartTime = Time.time;
     }
 
+    private void OnDestroy()
+    {
+        _gestureRecorderEvents.CurrentGesture.ResetPoseData(Gesture.PoseDataType.User);
+    }
+
     private void StopRecording()
     {
-        print("Stop Recording");
 
         _isRecording = false;
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if (_isRecording && _correctTransform.isSet)
         {
@@ -70,22 +77,12 @@ public class UserPoseRecorder : MonoBehaviour
 
     private void UpdateTransforms(object obj)
     {
-        print("Update Transforms requested");
-
         if (_correctTransform != null)
         {
             _correctTransform.UnregisterCallback(OnHandRootTransformChanged);
         }
-        if (_gestureRecorderEvents.CurrentGesture.Handedness == Handedness.Right)
-        {
-            _correctTransform = rightHandTransform;
-        }
-        else
-        {
-            _correctTransform = leftHandTransform;
-        }
+        _correctTransform = _gestureRecorderEvents.CurrentGesture.Handedness == Handedness.Right ? rightHandTransform : leftHandTransform;
         _correctTransform.RegisterCallback(OnHandRootTransformChanged);
-
         OnHandRootTransformChanged();
     }
 

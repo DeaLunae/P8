@@ -9,6 +9,8 @@ public class ReplayDemonstrationTransforms : MonoBehaviour
 {
     [SerializeField] private GestureRecorderEvents gestureRecorderEvents;
     [SerializeField] private Transform leftHand, rightHand;
+    [SerializeField] private bool loop;
+    
     private Transform[] _leftHandRootTransforms, _rightHandRootTransforms, _currentRootTransforms;
     private int _currentIndex;
     private bool _playing;
@@ -34,6 +36,12 @@ public class ReplayDemonstrationTransforms : MonoBehaviour
     {
         if (_stopwatch.ElapsedMilliseconds >= _stopTime)
         {
+            if (loop)
+            {
+                _playing = false;
+                StartReplayTransforms();
+                return;
+            }
             //We're doing replaying, so stop the replay here
             gestureRecorderEvents.DoneReplayDemonstrationGesture();
             _playing = false;
@@ -66,6 +74,7 @@ private Vector3 GetCenterPosition()
         gestureRecorderEvents.OnStartReplayDemonstrationGesture += StartReplayTransforms;
         gestureRecorderEvents.OnDoneRecordingDemonstrationGesture += OnDemonstrationCreated;
         gestureRecorderEvents.OnGestureSelected += SetupDemonstrationHand;
+        
     }
 
     private void OnDemonstrationCreated()
@@ -89,6 +98,7 @@ private Vector3 GetCenterPosition()
         }
         _currentRootTransforms = gestureRecorderEvents.CurrentGesture.Handedness == Handedness.Right ? _rightHandRootTransforms : _leftHandRootTransforms;
         OnDemonstrationCreated();
+        StartReplayTransforms();
     }
 
     private void OnDisable()

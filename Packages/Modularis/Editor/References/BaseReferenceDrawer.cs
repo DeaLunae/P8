@@ -43,52 +43,50 @@ namespace DevKit.Modularis.Editor.References
             var result = EditorGUI.Popup(configButton,useConstantP.boolValue ? 0 : 1, _popupOptions, _popupStyleDropdown);
             useConstantP.boolValue = result == 0;
             var baseref = PropertyDrawerUtility.GetActualObjectForSerializedProperty<BaseReference>(fieldInfo, property);
-
-            var genericType = baseref.GetConstant().GetType();
-            var genericTypeSpecificName = genericType.FullName.Split(".").Last();
             if (useConstantP.boolValue)
             {
                 if (constantValueP.propertyType == SerializedPropertyType.Generic)
                 {
-
-                    foldoutP.boolValue = EditorGUI.BeginFoldoutHeaderGroup(
-                        position, 
-                        foldoutP.boolValue, 
-                        genericTypeSpecificName);
-                    
-                    if (foldoutP.boolValue)
+                    var genericType = baseref.GetConstant()?.GetType();
+                    if (genericType != null)
                     {
-                        var newpos = new Rect(position);
-                        newpos.y += 16f + EditorGUIUtility.standardVerticalSpacing;
-                        var offset = newpos.x;
-                        newpos.x = 0f;
-                        newpos.width += offset;
-                        EditorGUI.indentLevel += 1;
-                        var startingDepth = constantValueP.depth;
-                        // Move into the first child of constantValue
-                        constantValueP.NextVisible(true);
-                        do
+                        var genericTypeSpecificName = genericType.FullName.Split(".").Last();
+                        foldoutP.boolValue = EditorGUI.BeginFoldoutHeaderGroup(
+                            position, 
+                            foldoutP.boolValue, 
+                            genericTypeSpecificName);
+                    
+                        if (foldoutP.boolValue)
                         {
-                            EditorGUILayout.PropertyField(constantValueP, true);
-                            constantValueP.NextVisible(false);
-                            // Quit iterating when you are back at the original depth (you've drawn all children)
-                        } while (constantValueP.depth > startingDepth);
+                            var newpos = new Rect(position);
+                            newpos.y += 16f + EditorGUIUtility.standardVerticalSpacing;
+                            var offset = newpos.x;
+                            newpos.x = 0f;
+                            newpos.width += offset;
+                            EditorGUI.indentLevel += 1;
+                            var startingDepth = constantValueP.depth;
+                            // Move into the first child of constantValue
+                            constantValueP.NextVisible(true);
+                            do
+                            {
+                                EditorGUILayout.PropertyField(constantValueP, true);
+                                constantValueP.NextVisible(false);
+                                // Quit iterating when you are back at the original depth (you've drawn all children)
+                            } while (constantValueP.depth > startingDepth);
+                        }
+                        EditorGUI.EndFoldoutHeaderGroup();
                     }
-                    EditorGUI.EndFoldoutHeaderGroup();
                 }
                 else
                 {
                     position.xMax -= 22f;
                     EditorGUI.PropertyField(position, constantValueP,new GUIContent(""),includeChildren:false);
-                    
                 }
             }
             else
             {
                 EditorGUI.PropertyField(position, variableP,new GUIContent(""),includeChildren:false);
             }
-            
-            //var baseVariable = variableP.objectReferenceValue as object as BaseVariable;
             if (EditorGUI.EndChangeCheck())
             {
                 property.serializedObject.ApplyModifiedProperties();

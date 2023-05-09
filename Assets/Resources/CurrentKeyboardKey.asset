@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a030b660c2148969fce8395136a5ef6, type: 3}
+  m_Name: CurrentKeyboardKey
+  m_EditorClassIdentifier: 
+  _guid: ba794148a3c081c47b2aad2ae166b3e5
+  description: 
+  value: A

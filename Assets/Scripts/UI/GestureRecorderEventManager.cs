@@ -32,6 +32,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("start recording user gesture");
             gestureRecorderEvents.StartRecordingUserGesture();
         }
     }
@@ -40,6 +41,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("done recording user gesture");
             gestureRecorderEvents.DoneRecordingUserGesture();
         }
     }
@@ -48,6 +50,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("start replay recorded user gesture");
             gestureRecorderEvents.StartReplayRecordedUserGesture();
         }
     }
@@ -56,13 +59,23 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("start replay demonstration gesture");
             gestureRecorderEvents.StartReplayDemonstrationGesture();
+        }
+    }
+    public void StopReplayRecordedUserGesture()
+    {
+        if (gestureRecorderEvents != null)
+        {
+            print("stop replay recorded user gesture");
+            gestureRecorderEvents.StopReplayRecordedUserGesture();
         }
     }
     public void DoneReplayRecordedUserGesture()
     {
         if (gestureRecorderEvents != null)
         {
+            print("done replay recorded user gesture");
             gestureRecorderEvents.DoneReplayRecordedUserGesture();
         }
     }
@@ -71,6 +84,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("start recording demonstration gesture");
             gestureRecorderEvents.StartRecordingDemonstrationGesture();
         }
     }
@@ -78,6 +92,7 @@ public class GestureRecorderEventManager : MonoBehaviour
     {
         if (gestureRecorderEvents != null)
         {
+            print("done recording demonstration gesture");
             gestureRecorderEvents.DoneRecordingDemonstrationGesture();
         }
     }

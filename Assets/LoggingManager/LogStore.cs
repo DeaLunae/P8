@@ -322,7 +322,7 @@ public class LogStore
     {
         if (arg is float)
         {
-            return ((float)arg).ToString("0.0000").Replace(",", ".");
+            return ((float)arg).ToString("0.000000").Replace(",", ".");
         }
         if (arg is int)
         {
@@ -334,7 +334,7 @@ public class LogStore
         }
         if (arg is Vector3)
         {
-            return ((Vector3)arg).ToString("0.0000").Replace(",", ".");
+            return ((Vector3)arg).ToString("0.000000").Replace(",", ".");
         }
         return arg.ToString();
     }

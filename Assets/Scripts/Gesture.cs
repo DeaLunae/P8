@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.MixedReality.Toolkit.Utilities;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Handedness = Microsoft.MixedReality.Toolkit.Utilities.Handedness;
@@ -14,25 +12,58 @@ public class Gesture
     [SerializeField] private GestureName gestureName;
     [SerializeField] private Handedness handedness;
     [SerializeField] public List<PoseFrameData> demonstrationData = new ();
+    [NonSerialized] private GestureName _userSessionResponse = GestureName.None;
+    [SerializeField] public bool staticGesture;
+    
+    public List<PoseFrameData> GetAppropriateData(PoseDataType dataType)
+    {
+        return dataType switch
+        {
+            PoseDataType.Demonstration => demonstrationData,
+            PoseDataType.User => UserData,
+            _ => null
+        };
+    }
+
     private List<PoseFrameData> _userData = new ();
     public GestureName Name => gestureName;
-    public Handedness Handedness => handedness;
+    public Handedness Handedness
+    {
+        get => handedness;
+        set => handedness = value;
+    }
+
     public List<PoseFrameData> UserData
     {
         get => _userData ??= new List<PoseFrameData>();
         set => _userData = value;
     }
-    public Gesture(GestureName gestureName, Handedness handedness)
+
+    public GestureName UserSessionResponse
+    {
+        get => _userSessionResponse;
+        set => _userSessionResponse = value;
+    }
+    public Gesture(GestureName gestureName, Handedness handedness, bool staticGesture, List<PoseFrameData> demonstrationData)
     {
         this.gestureName = gestureName;
         this.handedness = handedness;
+        this.staticGesture = staticGesture;
+        this.demonstrationData = demonstrationData;
+        _userData = new List<PoseFrameData>();
+    }
+    public Gesture(GestureName gestureName, Handedness handedness, bool staticGesture)
+    {
+        this.gestureName = gestureName;
+        this.handedness = handedness;
+        this.staticGesture = staticGesture;
         _userData = new List<PoseFrameData>();
     }
     public int FrameCount(PoseDataType dataType)
     {
         return dataType switch
         {
-            PoseDataType.Demonstration => (int)demonstrationData.Last().time,
+            PoseDataType.Demonstration => demonstrationData.Count,
             PoseDataType.User => UserData.Count,
             _ => -1
         };
@@ -55,7 +86,7 @@ public class Gesture
                 }
                 return UserData.LastOrDefault().time;
         }
-        return 1f;
+        return 2f;
     }
     public void ResetPoseData(PoseDataType dataType)
     {
@@ -75,9 +106,9 @@ public class Gesture
         switch (dataType)
         {
             case PoseDataType.Demonstration:
-                return demonstrationData[i];
+                return i >= demonstrationData.Count ? demonstrationData[^1] : demonstrationData[i];
             case PoseDataType.User:
-                return UserData[i];
+                return i >= UserData.Count ? UserData[^1] : UserData[i];
         }
         return new PoseFrameData();
     }
@@ -111,7 +142,7 @@ public class Gesture
                     1,
                     time - correctDataset[i - 1].time));
         }
-        return correctDataset.First();
+        return correctDataset.FirstOrDefault();
     }
     
     public void AddPoseFrame(PoseDataType dataType, PoseFrameData poseFrameData)
@@ -119,8 +150,8 @@ public class Gesture
         switch (dataType)
         {
             case PoseDataType.Demonstration:
-                poseFrameData.positions[0] = Vector3.zero;
-                demonstrationData.Insert(0,poseFrameData);
+                //poseFrameData.positions[0] = Vector3.zero;
+                demonstrationData.Add(poseFrameData);
                 break;
             case PoseDataType.User:
                 UserData.Add(poseFrameData);
@@ -197,8 +228,7 @@ public class Gesture
         Nummer9,
         Nummer10
     }
-
-
+    
     [Serializable]
     public enum PoseDataType
     {

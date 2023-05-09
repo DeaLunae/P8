@@ -13,16 +13,16 @@ public class ProgressIndicatorEvent : MonoBehaviour
     [SerializeField] private GestureRecorderEvents _gestureRecorderEvents;
     private ProgressIndicatorLoadingBar indicator;
     private Gesture currentGesture;
-    private int currentStartFrame;
-
+    private bool wantsToStop;
     private async void StartRecordingUserIndicator()
     {
-        currentStartFrame= Time.frameCount;
+        var startFrame = Time.frameCount;
+        var start = Time.time;
         await indicator.OpenAsync();
         float progress = 0;
         while (progress < 1)
         {
-            progress = (Time.frameCount - currentStartFrame) / (float) _gestureRecorderEvents.GetFramesToRecord();
+            progress = (Time.time - start) / 2f;
             indicator.Message = "Optager Tegn...";
             indicator.Progress = progress;
             await Task.Yield();
@@ -32,16 +32,19 @@ public class ProgressIndicatorEvent : MonoBehaviour
 
     private async void StartReplayIndicator()
     {
-        var startTime = Time.time;
+        return;
+        var startFrame = Time.frameCount;
+        var start = Time.time;
         await indicator.OpenAsync();
         float progress = 0;
-        while (progress < 1)
+        while (!wantsToStop)
         {
-            progress = (Time.time - startTime) / (float) currentGesture.GetTotalTime(Gesture.PoseDataType.User);
+            progress = (Time.time - start) / (float) (currentGesture.GetTotalTime(Gesture.PoseDataType.Demonstration)/1000) % 1f;
             indicator.Message = "Afspiller din optagelse...";
             indicator.Progress = progress;
             await Task.Yield();
         }
+        wantsToStop = false;
         await indicator.CloseAsync();
     }
     private async void StartDemonstrationIndicator()
@@ -51,7 +54,6 @@ public class ProgressIndicatorEvent : MonoBehaviour
         float progress = 0;
         while (progress < 1)
         {
-            
             progress = (Time.frameCount - startFrame) / (float) currentGesture.FrameCount(Gesture.PoseDataType.Demonstration);
             indicator.Message = "Demonstrerer Tegn...";
             indicator.Progress = progress;
@@ -72,9 +74,15 @@ public class ProgressIndicatorEvent : MonoBehaviour
             _gestureRecorderEvents.OnGestureSelected += GestureSelected;
             _gestureRecorderEvents.OnStartReplayRecordedUserGesture += StartReplayIndicator;
             _gestureRecorderEvents.OnStartRecordingUserGesture += StartRecordingUserIndicator;
+            _gestureRecorderEvents.OnStopReplayRecordedUserGesture += WantsToStop;
         }
 
         Invoke(nameof(DelayedDeactivate),1);
+    }
+
+    private void WantsToStop()
+    {
+        wantsToStop = true;
     }
 
     private void DelayedDeactivate()
@@ -87,6 +95,7 @@ public class ProgressIndicatorEvent : MonoBehaviour
         _gestureRecorderEvents.OnGestureSelected -= GestureSelected;
         _gestureRecorderEvents.OnStartReplayRecordedUserGesture -= StartReplayIndicator;
         _gestureRecorderEvents.OnStartRecordingUserGesture -= StartRecordingUserIndicator;
+        _gestureRecorderEvents.OnStopReplayRecordedUserGesture -= WantsToStop;
 
     }
 }

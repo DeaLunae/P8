@@ -11,8 +11,8 @@ namespace MRKTExtensions.Ux
     {
         private TextMeshPro textMeshPro;
         private Color textOriginalColor;
-        private Color iconOriginalColor;
-        private Renderer iconRenderer;
+        private List<Color> iconOriginalColors;
+        private List<Renderer> iconRenderers;
         private List<MonoBehaviour> buttonBehaviours;
         private Transform buttonHighLightComponent;
         private bool isInitialized = false;
@@ -26,12 +26,19 @@ namespace MRKTExtensions.Ux
                 // Components
                 var iconParent = transform.Find("IconAndText");
                 textMeshPro = iconParent.GetComponentInChildren<TextMeshPro>();
-                iconRenderer = iconParent.Find("UIButtonSquareIcon").gameObject.GetComponent<Renderer>();
+                iconRenderers = new List<Renderer>();
+                iconRenderers.Add(iconParent.Find("UIButtonSquareIcon").gameObject.GetComponent<Renderer>());
+                if (iconParent.Find("UIButtonToggleIconOff") != null)
+                {
+                    iconRenderers.Add(iconParent.Find("UIButtonToggleIconOff").gameObject.GetComponent<Renderer>());
+                }
+
                 buttonHighLightComponent = transform.Find("CompressableButtonVisuals");
                 buttonBehaviours = GetComponents<MonoBehaviour>().ToList();
                 // Material Changes
                 textOriginalColor = textMeshPro.color;
-                iconOriginalColor = iconRenderer.material.color;
+                iconOriginalColors = new List<Color>();
+                iconOriginalColors.AddRange(iconRenderers.Select(e => e.material.color));
             }
         }
         
@@ -43,7 +50,10 @@ namespace MRKTExtensions.Ux
             }
             buttonHighLightComponent.gameObject.SetActive(active);
             textMeshPro.color = active ? textOriginalColor : Color.gray;
-            iconRenderer.material.color = active ? iconOriginalColor : Color.gray;
+            for (var i = 0; i < iconRenderers.Count; i++)
+            {
+                iconRenderers[i].material.color = active ? iconOriginalColors[i] : Color.gray;
+            }
         }
 
         public void SetStatusAll(bool active)
@@ -51,6 +61,17 @@ namespace MRKTExtensions.Ux
             foreach (var buttonStatusController in FindObjectsOfType<ButtonStatusController>())
             {
                 if (buttonStatusController == this)
+                {
+                    continue;
+                }
+                buttonStatusController.SetStatus(active);
+            }
+        }
+        public void SetStatusAllExceptFlip(bool active)
+        {
+            foreach (var buttonStatusController in FindObjectsOfType<ButtonStatusController>())
+            {
+                if (buttonStatusController == this || buttonStatusController.gameObject.name == "Drej tegnet")
                 {
                     continue;
                 }
